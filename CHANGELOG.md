@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-11-09
+
 ### Added
 
 - `legacyVersion()`: recognise installs from before a plugin adopted the framework (by an option
@@ -56,6 +58,7 @@ All notable changes to this project are documented here. The format follows
 - Multisite support: network activation and uninstall, new-site setup, table cleanup on site deletion.
 - Deactivation survey with configurable reasons, local storage, a remote handler and consent for the site URL.
 
-[Unreleased]: https://github.com/bignall/wp-foundation/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/bignall/wp-foundation/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/bignall/wp-foundation/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/bignall/wp-foundation/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bignall/wp-foundation/releases/tag/v0.1.0
