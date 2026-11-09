@@ -54,8 +54,8 @@ final class OptionsTask extends AbstractTask {
 	 */
 	public function activate( Plugin $plugin ): void {
 		foreach ( $this->options as $name => $option ) {
-			// add_option() leaves existing values untouched.
-			add_option( $name, $option['value'], '', $option['autoload'] ? 'yes' : 'no' );
+			// add_option() leaves existing values untouched. A boolean autoload works on WP 6.4+.
+			add_option( $name, $option['value'], '', $option['autoload'] );
 		}
 	}
 
