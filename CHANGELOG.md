@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Project website with all guides and a live deactivation survey demo: https://bignall.github.io/wp-foundation/
+- `homepage` in `composer.json`, linking Packagist to the website.
+
 ## [0.1.1] - 2026-11-09
 
 ### Fixed
