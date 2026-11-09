@@ -42,7 +42,7 @@ Plugin::create( __FILE__ )
 ## Installation
 
 ```bash
-composer require arbe/wp-foundation
+composer require bignall/wp-foundation
 ```
 
 Because several plugins on one site may bundle different versions of this library, **prefix

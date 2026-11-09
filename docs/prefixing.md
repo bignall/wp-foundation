@@ -10,7 +10,7 @@ so each plugin has its own copy.
 ```json
 {
 	"require": {
-		"arbe/wp-foundation": "^1.0"
+		"bignall/wp-foundation": "^1.0"
 	},
 	"require-dev": {
 		"brianhenryie/strauss": "^0.19"
@@ -20,7 +20,7 @@ so each plugin has its own copy.
 			"target_directory": "vendor-prefixed",
 			"namespace_prefix": "AcmeBookings\\Vendor\\",
 			"classmap_prefix": "AcmeBookings_Vendor_",
-			"packages": ["arbe/wp-foundation"],
+			"packages": ["bignall/wp-foundation"],
 			"delete_vendor_packages": true
 		}
 	},

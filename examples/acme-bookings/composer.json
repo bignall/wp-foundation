@@ -1,6 +1,6 @@
 {
 	"name": "acme/acme-bookings",
-	"description": "Example plugin built on arbe/wp-foundation.",
+	"description": "Example plugin built on bignall/wp-foundation.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"repositories": [
@@ -14,7 +14,7 @@
 	],
 	"require": {
 		"php": ">=8.1",
-		"arbe/wp-foundation": "*@dev"
+		"bignall/wp-foundation": "*@dev"
 	},
 	"require-dev": {
 		"brianhenryie/strauss": "^0.19"
@@ -30,7 +30,7 @@
 			"namespace_prefix": "AcmeBookings\\Vendor\\",
 			"classmap_prefix": "AcmeBookings_Vendor_",
 			"packages": [
-				"arbe/wp-foundation"
+				"bignall/wp-foundation"
 			],
 			"delete_vendor_packages": true
 		}

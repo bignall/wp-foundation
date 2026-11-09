@@ -3,7 +3,7 @@
 ## 1. Require the library
 
 ```bash
-composer require arbe/wp-foundation
+composer require bignall/wp-foundation
 ```
 
 ## 2. Describe your plugin in its main file

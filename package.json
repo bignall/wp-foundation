@@ -1,7 +1,7 @@
 {
 	"name": "wp-foundation",
 	"private": true,
-	"description": "Browser tests for arbe/wp-foundation assets.",
+	"description": "Browser tests for bignall/wp-foundation assets.",
 	"license": "GPL-2.0-or-later",
 	"scripts": {
 		"test:browser": "node tests/Browser/deactivation-survey.test.js"
