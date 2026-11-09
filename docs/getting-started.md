@@ -57,7 +57,13 @@ site down. Your main-file guard already handles this, so disable it:
 
 ## 5. Prefix before release
 
-See [prefixing.md](prefixing.md).
+See [Prefixing with Strauss](prefixing.md), then [Release builds](releasing.md) for a small zip.
+
+## Already shipped your plugin?
+
+If sites already run a version of your plugin from before it used WP Foundation, add
+`->legacyVersion()` so they're upgraded rather than treated as fresh installs. See
+[Lifecycle and upgrades](lifecycle.md#adopting-the-framework-in-a-plugin-that-has-already-shipped).
 
 ## Identity and naming
 

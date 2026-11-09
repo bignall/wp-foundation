@@ -31,9 +31,9 @@ Plugin::create( __FILE__ )
 | --- | --- |
 | **Activation** | Checks requirements and refuses to activate with a clear message if they aren't met. Then creates tables, adds default options without overwriting existing ones, creates roles and capabilities, schedules cron events, flushes rewrite rules, and registers the uninstall hook. |
 | **Every request** | Checks requirements again (a required plugin might have been deactivated). If they're not met, shows an admin notice instead of fataling. Detects new versions, including auto-updates, which never fire the activation hook, and runs the upgrade under a lock. |
-| **Upgrade** | Runs versioned migrations in order, syncs table schemas with dbDelta, adds new options, caps and cron events. If a migration fails, the version only advances past steps that completed, an admin notice is shown, and it retries on the next page load. |
+| **Upgrade** | Runs versioned migrations in order, syncs table schemas with dbDelta, adds new options (and, if you ask, new keys in array options), caps and cron events. If a migration fails, the version only advances past steps that completed, an admin notice is shown, and it retries on the next page load. Plugins that shipped before adopting the framework can report their old version, so existing sites get their migrations. |
 | **Deactivation** | Unschedules cron events and removes the plugin's rewrite rules. Data is kept. Optionally asks why the user is deactivating. |
-| **Uninstall** | Removes tables, options, roles, capabilities and cron events, but only if you opt in (or let the site owner choose). |
+| **Uninstall** | Removes tables, options, roles, capabilities, cron events, and the posts and terms of your post types and taxonomies, but only if you opt in (or let the site owner choose). |
 | **Multisite** | Network activation, deactivation and uninstall run on every site. New sites are set up automatically, and deleted sites have their tables dropped. |
 
 ## Requirements
@@ -49,7 +49,11 @@ composer require bignall/wp-foundation
 
 Because several plugins on one site may bundle different versions of this library, **prefix
 it** with [Strauss](https://github.com/BrianHenryIE/strauss) before you ship. See
-[docs/prefixing.md](docs/prefixing.md) and the [example plugin](examples/acme-bookings).
+[docs/prefixing.md](docs/prefixing.md) and the [example plugin](examples/acme-bookings). For
+release zips without Composer's dev tools, see [docs/releasing.md](docs/releasing.md).
+
+While the library is below 1.0, depend on `^0.1`: Composer treats each 0.x minor version as a
+possible breaking change.
 
 ## Quick start
 
@@ -101,6 +105,13 @@ Responses are stored on the site by default. Add a `RemoteHandler`, or your own 
 to send them to your server. When data leaves the site, the modal says so, and the site URL is
 only included if the user ticks a consent box. See [docs/deactivation-survey.md](docs/deactivation-survey.md).
 
+## Helpers
+
+- `$plugin->requestRewriteFlush()` rebuilds rewrite rules at the end of the next `init`, for example
+  after a settings page changes a URL prefix.
+- `$plugin->notices()->flash( 'success', 'Saved.' )` shows a notice on the user's next admin page,
+  for forms that redirect after saving.
+
 ## Documentation
 
 - [Getting started](docs/getting-started.md)
@@ -110,7 +121,9 @@ only included if the user ticks a consent box. See [docs/deactivation-survey.md]
 - [Database tables and migrations](docs/database.md)
 - [Deactivation survey](docs/deactivation-survey.md)
 - [Multisite](docs/multisite.md)
+- [Flash notices](docs/notices.md)
 - [Prefixing with Strauss](docs/prefixing.md)
+- [Release builds](docs/releasing.md)
 - [Hooks reference](docs/hooks.md)
 
 ## Development

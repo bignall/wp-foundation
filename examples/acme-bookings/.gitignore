@@ -1,3 +1,4 @@
 /vendor/
 /vendor-prefixed/
 composer.lock
+/build/

@@ -172,4 +172,16 @@ final class DeactivationSurveyTest extends TestCase {
 		self::assertSame( '', $config['strings']['privacy'] );
 		self::assertCount( 7, $config['reasons'] );
 	}
+
+	public function test_assets_live_inside_the_autoloaded_src_directory(): void {
+		// Strauss and similar tools copy only a package's autoload directories, so assets kept
+		// outside src/ would be missing from prefixed builds and the survey would never show.
+		$src = realpath( dirname( __DIR__, 3 ) . '/src' );
+
+		foreach ( array( 'deactivation-survey.js', 'deactivation-survey.css' ) as $file ) {
+			$path = realpath( DeactivationSurvey::assetPath( $file ) );
+			self::assertNotFalse( $path, "{$file} exists" );
+			self::assertStringStartsWith( $src . DIRECTORY_SEPARATOR, $path );
+		}
+	}
 }

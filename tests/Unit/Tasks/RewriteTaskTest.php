@@ -1,6 +1,6 @@
 <?php
 /**
- * Rewrite task tests.
+ * Rewrite flushing tests.
  *
  * @package Bignall\WPFoundation
  */
@@ -15,25 +15,39 @@ use Brain\Monkey\Functions;
 
 final class RewriteTaskTest extends TestCase {
 
-	public function test_flushes_on_next_init_after_activation(): void {
+	public function test_activation_requests_a_flush_that_runs_once_on_init(): void {
 		$plugin = $this->plugin();
-		$task   = new RewriteTask();
-		$task->activate( $plugin );
+		( new RewriteTask() )->activate( $plugin );
 		self::assertSame( 1, $this->options['acme_bookings_flush_rewrite_rules'] );
 
-		$callback = null;
-		Functions\when( 'add_action' )->alias(
-			function ( string $hook, callable $cb ) use ( &$callback ): void {
-				$callback = $cb;
-			}
-		);
-		$task->register( $plugin );
-
 		Functions\expect( 'flush_rewrite_rules' )->once()->with( false );
-		$callback();
-		$callback(); // Flag is cleared, so no second flush.
+		$plugin->lifecycle()->maybeFlushRewriteRules();
+		$plugin->lifecycle()->maybeFlushRewriteRules(); // Flag is cleared, so no second flush.
 
 		self::assertArrayNotHasKey( 'acme_bookings_flush_rewrite_rules', $this->options );
+	}
+
+	public function test_request_rewrite_flush_works_without_the_rewrite_task(): void {
+		$plugin = $this->plugin();
+		$plugin->requestRewriteFlush();
+
+		Functions\expect( 'flush_rewrite_rules' )->once()->with( false );
+		$plugin->lifecycle()->maybeFlushRewriteRules();
+	}
+
+	public function test_no_flush_without_a_request(): void {
+		Functions\expect( 'flush_rewrite_rules' )->never();
+		$this->plugin()->lifecycle()->maybeFlushRewriteRules();
+	}
+
+	public function test_flush_handler_is_registered_late_on_init_at_boot(): void {
+		Functions\when( 'register_activation_hook' )->justReturn( null );
+		Functions\when( 'register_deactivation_hook' )->justReturn( null );
+		Functions\when( 'did_action' )->justReturn( 0 );
+
+		$plugin = $this->plugin()->boot();
+
+		self::assertSame( PHP_INT_MAX, has_action( 'init', array( $plugin->lifecycle(), 'maybeFlushRewriteRules' ) ) );
 	}
 
 	public function test_deactivate_deletes_stored_rules(): void {

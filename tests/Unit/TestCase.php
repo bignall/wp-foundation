@@ -29,6 +29,13 @@ abstract class TestCase extends PHPUnitTestCase {
 	 */
 	protected array $options = array();
 
+	/**
+	 * In-memory transients.
+	 *
+	 * @var array<string, mixed>
+	 */
+	protected array $transients = array();
+
 	protected string $pluginFile = '/var/www/wp-content/plugins/acme-bookings/acme-bookings.php';
 
 	protected string $headerVersion = '1.0.0';
@@ -48,6 +55,21 @@ abstract class TestCase extends PHPUnitTestCase {
 		Functions\when( 'get_file_data' )->alias( fn (): array => array( 'Version' => $this->headerVersion ) );
 		Functions\when( 'trailingslashit' )->alias( static fn ( string $s ): string => rtrim( $s, '/\\' ) . '/' );
 		Functions\when( 'is_multisite' )->justReturn( false );
+		Functions\when( 'is_admin' )->justReturn( false );
+		$this->transients = array();
+		Functions\when( 'get_transient' )->alias( fn ( string $name ) => $this->transients[ $name ] ?? false );
+		Functions\when( 'set_transient' )->alias(
+			function ( string $name, $value ): bool {
+				$this->transients[ $name ] = $value;
+				return true;
+			}
+		);
+		Functions\when( 'delete_transient' )->alias(
+			function ( string $name ): bool {
+				unset( $this->transients[ $name ] );
+				return true;
+			}
+		);
 		Functions\when( 'get_bloginfo' )->justReturn( '6.7' );
 
 		Functions\when( 'get_option' )->alias(

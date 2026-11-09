@@ -36,4 +36,13 @@
 | `{prefix}_flush_rewrite_rules` | Pending rewrite flush flag. |
 | `{prefix}_deactivation_feedback` | Survey responses stored by `LocalHandler`. |
 
+The flush flag is set by `Plugin::requestRewriteFlush()`, and by `->flushRewriteRules()` on
+activation and upgrade.
+
+## Transients
+
+| Transient | Contents |
+| --- | --- |
+| `{prefix}_notices_{user id}` | [Flash notices](notices.md) waiting for that user. Expires after 10 minutes. |
+
 All are deleted on uninstall when data deletion is enabled.

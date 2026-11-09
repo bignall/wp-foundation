@@ -7,8 +7,8 @@ const path = require( 'node:path' );
 const { chromium } = require( 'playwright' );
 
 const root = path.resolve( __dirname, '../..' );
-const js = fs.readFileSync(root + '/assets/deactivation-survey.js', 'utf8');
-const css = fs.readFileSync(root + '/assets/deactivation-survey.css', 'utf8');
+const js = fs.readFileSync(root + '/src/Feedback/assets/deactivation-survey.js', 'utf8');
+const css = fs.readFileSync(root + '/src/Feedback/assets/deactivation-survey.css', 'utf8');
 const config = {
   basename: 'acme-bookings/acme-bookings.php', ajaxUrl: 'https://site.test/wp-admin/admin-ajax.php',
   action: 'acme_bookings_deactivation_feedback', nonce: 'n1', maxLength: 1000, askConsent: true,

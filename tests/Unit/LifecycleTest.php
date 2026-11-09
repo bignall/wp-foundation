@@ -230,4 +230,155 @@ final class LifecycleTest extends TestCase {
 
 		self::assertSame( array(), $task->calls );
 	}
+
+	public function test_legacy_install_is_upgraded_from_detected_version(): void {
+		$this->headerVersion             = '0.2.0';
+		$this->options['old_db_version'] = '0.1.0';
+		Actions\expectDone( 'acme_bookings_upgraded' )->once()->with( '0.1.0', '0.2.0', \Mockery::any() );
+
+		$ran  = array();
+		$task = new RecordingTask();
+		$this->plugin()
+			->task( $task )
+			->legacyVersion( static fn (): ?string => get_option( 'old_db_version' ) ? '0.1.0' : null )
+			->migration(
+				'0.2.0',
+				function () use ( &$ran ): void {
+					$ran[] = '0.2.0';
+				}
+			)
+			->lifecycle()
+			->maybeUpgrade();
+
+		self::assertSame( array( '0.2.0' ), $ran );
+		self::assertSame( array( 'upgrade 0.1.0->0.2.0' ), $task->calls, 'Upgrade path, not fresh-install activation.' );
+		self::assertSame( '0.2.0', $this->options['acme_bookings_version'] );
+		self::assertArrayHasKey( 'acme_bookings_installed_at', $this->options );
+	}
+
+	public function test_legacy_version_can_be_an_option_name(): void {
+		$this->headerVersion          = '2.0.0';
+		$this->options['acme_db_ver'] = '1.4';
+		$ran                          = false;
+
+		$this->plugin()
+			->legacyVersion( 'acme_db_ver' )
+			->migration(
+				'2.0.0',
+				function () use ( &$ran ): void {
+					$ran = true;
+				}
+			)
+			->lifecycle()
+			->maybeUpgrade();
+
+		self::assertTrue( $ran );
+		self::assertSame( '2.0.0', $this->options['acme_bookings_version'] );
+	}
+
+	public function test_no_legacy_version_means_fresh_install(): void {
+		$ran  = false;
+		$task = new RecordingTask();
+		$this->plugin()
+			->task( $task )
+			->legacyVersion( static fn (): ?string => null )
+			->migration(
+				'1.0.0',
+				function () use ( &$ran ): void {
+					$ran = true;
+				}
+			)
+			->lifecycle()
+			->maybeUpgrade();
+
+		self::assertFalse( $ran, 'Fresh installs skip migrations.' );
+		self::assertSame( array( 'activate' ), $task->calls );
+		self::assertSame( '1.0.0', $this->options['acme_bookings_version'] );
+	}
+
+	public function test_legacy_version_is_ignored_once_a_version_is_stored(): void {
+		$this->options['acme_bookings_version'] = '1.0.0';
+		$called                                 = false;
+
+		$this->plugin()
+			->legacyVersion(
+				function () use ( &$called ): string {
+					$called = true;
+					return '0.1.0';
+				}
+			)
+			->lifecycle()
+			->maybeUpgrade();
+
+		self::assertFalse( $called );
+	}
+
+	public function test_legacy_install_already_current_just_starts_tracking(): void {
+		$task = new RecordingTask();
+		$this->plugin()->task( $task )->legacyVersion( static fn (): string => '1.0.0' )->lifecycle()->maybeUpgrade();
+
+		self::assertSame( array(), $task->calls );
+		self::assertSame( '1.0.0', $this->options['acme_bookings_version'] );
+	}
+
+	public function test_failed_legacy_upgrade_retries_from_legacy_version(): void {
+		$this->headerVersion = '0.2.0';
+		$attempts            = 0;
+		$plugin              = $this->plugin()
+			->legacyVersion( static fn (): string => '0.1.0' )
+			->migration(
+				'0.2.0',
+				function () use ( &$attempts ): void {
+					++$attempts;
+					if ( 1 === $attempts ) {
+						throw new RuntimeException( 'locked' );
+					}
+				}
+			);
+
+		$plugin->lifecycle()->maybeUpgrade();
+		self::assertArrayNotHasKey( 'acme_bookings_version', $this->options );
+		self::assertArrayNotHasKey( 'acme_bookings_installed_at', $this->options );
+
+		$plugin->lifecycle()->maybeUpgrade();
+		self::assertSame( 2, $attempts );
+		self::assertSame( '0.2.0', $this->options['acme_bookings_version'] );
+	}
+
+	public function test_activation_of_legacy_install_runs_migrations(): void {
+		Functions\when( 'register_uninstall_hook' )->justReturn( null );
+		Actions\expectDone( 'acme_bookings_activated' )->once()->with( \Mockery::any(), false );
+		$this->headerVersion = '0.2.0';
+		$log                 = new ArrayObject();
+
+		$this->plugin()
+			->task( new RecordingTask( 'task', $log ) )
+			->legacyVersion( static fn (): string => '0.1.0' )
+			->migration(
+				'0.2.0',
+				static function () use ( $log ): void {
+					$log->append( 'migration' );
+				}
+			)
+			->lifecycle()
+			->activate();
+
+		self::assertSame( array( 'migration', 'task:upgrade 0.1.0->0.2.0', 'task:activate' ), $log->getArrayCopy() );
+		self::assertSame( '0.2.0', $this->options['acme_bookings_version'] );
+	}
+
+	public function test_numeric_legacy_version_is_accepted(): void {
+		$this->options['acme_db_ver'] = 1.5;
+		self::assertSame( '1.5', $this->plugin()->legacyVersion( 'acme_db_ver' )->detectLegacyVersion() );
+		self::assertNull( $this->plugin()->legacyVersion( 'missing_option' )->detectLegacyVersion() );
+		self::assertNull( $this->plugin()->detectLegacyVersion() );
+	}
+
+	public function test_uninstall_also_removes_pending_rewrite_flush(): void {
+		$this->options['acme_bookings_flush_rewrite_rules'] = 1;
+
+		$this->plugin()->deleteDataOnUninstall()->lifecycle()->uninstall();
+
+		self::assertArrayNotHasKey( 'acme_bookings_flush_rewrite_rules', $this->options );
+	}
 }

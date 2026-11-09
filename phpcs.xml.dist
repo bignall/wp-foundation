@@ -41,6 +41,15 @@
 		</properties>
 	</rule>
 
+	<!-- The example plugin's own capability. -->
+	<rule ref="WordPress.WP.Capabilities">
+		<properties>
+			<property name="custom_capabilities" type="array">
+				<element value="manage_acme_bookings"/>
+			</property>
+		</properties>
+	</rule>
+
 	<!-- Tests don't need full docblocks. -->
 	<rule ref="Squiz.Commenting">
 		<exclude-pattern>tests/*</exclude-pattern>

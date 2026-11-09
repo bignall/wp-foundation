@@ -38,6 +38,10 @@ final class Lifecycle {
 		register_activation_hook( $this->plugin->file(), array( $this, 'activate' ) );
 		register_deactivation_hook( $this->plugin->file(), array( $this, 'deactivate' ) );
 
+		// Flushes requested by activation, upgrade or Plugin::requestRewriteFlush(). Runs late
+		// on init, once post types and rewrite rules are registered.
+		add_action( 'init', array( $this, 'maybeFlushRewriteRules' ), PHP_INT_MAX );
+
 		add_action( 'admin_notices', array( $this, 'printUpgradeErrorNotice' ) );
 		add_action( 'network_admin_notices', array( $this, 'printUpgradeErrorNotice' ) );
 
@@ -75,9 +79,12 @@ final class Lifecycle {
 		$stored  = $this->storedVersion();
 		$current = $this->plugin->currentVersion();
 
+		// An install from before the plugin adopted the framework is upgraded, not installed.
+		$from = $stored ?? $this->plugin->detectLegacyVersion();
+
 		// Reactivating after files were updated while the plugin was inactive.
-		if ( null !== $stored && version_compare( $stored, $current, '<' ) ) {
-			if ( ! $this->upgradeSite( $stored ) ) {
+		if ( null !== $from && version_compare( $from, $current, '<' ) ) {
+			if ( ! $this->upgradeSite( $from ) ) {
 				return;
 			}
 		}
@@ -87,8 +94,7 @@ final class Lifecycle {
 		}
 
 		if ( null === $stored ) {
-			update_option( $this->plugin->optionName( 'version' ), $current, false );
-			update_option( $this->plugin->optionName( 'installed_at' ), time(), false );
+			$this->recordInstall();
 		}
 
 		/**
@@ -97,7 +103,7 @@ final class Lifecycle {
 		 * @param Plugin $plugin    The plugin.
 		 * @param bool   $firstTime Whether this is the first install on the site.
 		 */
-		do_action( "{$this->plugin->prefix()}_activated", $this->plugin, null === $stored );
+		do_action( "{$this->plugin->prefix()}_activated", $this->plugin, null === $from );
 	}
 
 	/**
@@ -155,7 +161,7 @@ final class Lifecycle {
 			$task->uninstall( $this->plugin );
 		}
 
-		foreach ( array( 'version', 'installed_at', 'upgrade_lock', 'upgrade_error', 'deactivation_feedback' ) as $key ) {
+		foreach ( array( 'version', 'installed_at', 'upgrade_lock', 'upgrade_error', 'deactivation_feedback', 'flush_rewrite_rules' ) as $key ) {
 			delete_option( $this->plugin->optionName( $key ) );
 		}
 	}
@@ -163,6 +169,9 @@ final class Lifecycle {
 	/**
 	 * Run an upgrade if the stored version is older than the code. Installs the plugin if it
 	 * is active but was never activated through WordPress (e.g. enabled directly in the database).
+	 *
+	 * When no version is stored, `Plugin::legacyVersion()` is consulted: an install that predates
+	 * the framework is upgraded from the version it reports, so its migrations run.
 	 */
 	public function maybeUpgrade(): void {
 		$stored  = $this->storedVersion();
@@ -177,13 +186,37 @@ final class Lifecycle {
 		}
 
 		try {
-			if ( null === $stored ) {
-				$this->activateSite();
-			} else {
+			if ( null !== $stored ) {
 				$this->upgradeSite( $stored );
+				return;
+			}
+
+			$legacy = $this->plugin->detectLegacyVersion();
+			if ( null === $legacy ) {
+				$this->activateSite();
+			} elseif ( version_compare( $legacy, $current, '<' ) ) {
+				if ( $this->upgradeSite( $legacy ) ) {
+					$this->recordInstall();
+				}
+			} else {
+				// Already on the current version's data: just start tracking it.
+				$this->recordInstall();
 			}
 		} finally {
 			$this->releaseLock();
+		}
+	}
+
+	/**
+	 * Flush rewrite rules if a flush was requested.
+	 *
+	 * @internal Hooked to `init`.
+	 */
+	public function maybeFlushRewriteRules(): void {
+		$flag = $this->plugin->optionName( 'flush_rewrite_rules' );
+		if ( get_option( $flag ) ) {
+			delete_option( $flag );
+			flush_rewrite_rules( false );
 		}
 	}
 
@@ -322,6 +355,17 @@ final class Lifecycle {
 			),
 			array( $error )
 		);
+	}
+
+	/**
+	 * Start tracking the install: store the current version (unless an upgrade already did)
+	 * and the install time (unless already known).
+	 */
+	private function recordInstall(): void {
+		if ( null === $this->storedVersion() ) {
+			update_option( $this->plugin->optionName( 'version' ), $this->plugin->currentVersion(), false );
+		}
+		add_option( $this->plugin->optionName( 'installed_at' ), time(), '', false );
 	}
 
 	/**

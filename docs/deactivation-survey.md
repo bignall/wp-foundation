@@ -105,4 +105,6 @@ Or listen to the `{prefix}_deactivation_feedback` action, which fires after the 
 The endpoint is `wp_ajax_{prefix}_deactivation_feedback`. It checks a nonce and the
 `activate_plugins` capability, accepts only known reason ids, and sanitizes the details. The
 modal's text is set with `textContent`, never as HTML. Script and styles are inlined, so they
-work wherever the library is installed or prefixed.
+work wherever the library is installed or prefixed. They live under the library's `src/`
+directory so that Strauss copies them; if they're ever missing, the survey is skipped rather than
+breaking the Plugins screen.

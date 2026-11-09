@@ -9,12 +9,14 @@ declare(strict_types=1);
 
 namespace Bignall\WPFoundation;
 
+use Bignall\WPFoundation\Admin\Notices;
 use Bignall\WPFoundation\Database\CallbackMigration;
 use Bignall\WPFoundation\Database\Migration;
 use Bignall\WPFoundation\Database\Table;
 use Bignall\WPFoundation\Feedback\DeactivationSurvey;
 use Bignall\WPFoundation\Lifecycle\Lifecycle;
 use Bignall\WPFoundation\Requirements\Requirements;
+use Bignall\WPFoundation\Tasks\ContentTask;
 use Bignall\WPFoundation\Tasks\CronTask;
 use Bignall\WPFoundation\Tasks\OptionsTask;
 use Bignall\WPFoundation\Tasks\RewriteTask;
@@ -51,6 +53,15 @@ final class Plugin {
 	private Requirements $requirements;
 	private Lifecycle $lifecycle;
 	private ?DeactivationSurvey $survey = null;
+	private ?Notices $notices           = null;
+
+	/**
+	 * How to find the version of an install that predates the framework: an option name, or a
+	 * callback returning the version (or null).
+	 *
+	 * @var string|callable(Plugin): ?string|null
+	 */
+	private $legacyVersion = null;
 
 	/**
 	 * Tasks in registration order, keyed by a unique id.
@@ -191,9 +202,12 @@ final class Plugin {
 	 *
 	 * @param array<string, mixed> $options  Option name => default value.
 	 * @param bool                 $autoload Whether to autoload these options.
+	 * @param bool                 $merge    For array options: also add keys that are missing from
+	 *                                       a stored value, so new defaults reach existing sites.
+	 *                                       Existing values are never changed.
 	 */
-	public function options( array $options, bool $autoload = false ): self {
-		$this->sharedTask( OptionsTask::class )->add( $options, $autoload );
+	public function options( array $options, bool $autoload = false, bool $merge = false ): self {
+		$this->sharedTask( OptionsTask::class )->add( $options, $autoload, $merge );
 		return $this;
 	}
 
@@ -295,6 +309,41 @@ final class Plugin {
 	}
 
 	/**
+	 * Delete every post of these types, with their meta, on uninstall when data deletion is enabled.
+	 *
+	 * @param string ...$postTypes Post type names.
+	 */
+	public function postTypes( string ...$postTypes ): self {
+		$this->sharedTask( ContentTask::class )->postTypes( ...$postTypes );
+		return $this;
+	}
+
+	/**
+	 * Delete every term in these taxonomies, with their meta, on uninstall when data deletion is enabled.
+	 *
+	 * @param string ...$taxonomies Taxonomy names.
+	 */
+	public function taxonomies( string ...$taxonomies ): self {
+		$this->sharedTask( ContentTask::class )->taxonomies( ...$taxonomies );
+		return $this;
+	}
+
+	/**
+	 * Recognise installs from before the plugin used this framework, so their migrations run.
+	 *
+	 * Consulted only when no `{prefix}_version` is stored. If it finds a version, the site is
+	 * upgraded from that version instead of being treated as a fresh install.
+	 *
+	 * @param string|callable(Plugin): ?string $detector The name of an option holding the old
+	 *                                                   version, or a callback returning the
+	 *                                                   version (null when not installed).
+	 */
+	public function legacyVersion( string|callable $detector ): self {
+		$this->legacyVersion = $detector;
+		return $this;
+	}
+
+	/**
 	 * Add a custom lifecycle task.
 	 *
 	 * @param Task $task Task.
@@ -354,6 +403,10 @@ final class Plugin {
 		}
 
 		$this->survey?->register( $this );
+
+		if ( is_admin() ) {
+			$this->notices()->register();
+		}
 
 		if ( did_action( 'plugins_loaded' ) ) {
 			$this->load();
@@ -479,12 +532,54 @@ final class Plugin {
 	}
 
 	/**
-	 * Tasks in registration order.
+	 * Tasks in registration order, except that content cleanup always comes last. Uninstall
+	 * runs tasks in reverse, so posts and terms are deleted before tables are dropped, in case
+	 * their delete hooks still use those tables.
 	 *
 	 * @return list<Task>
 	 */
 	public function tasks(): array {
-		return array_values( $this->tasks );
+		$tasks   = array_filter( $this->tasks, static fn ( Task $t ): bool => ! $t instanceof ContentTask );
+		$content = array_filter( $this->tasks, static fn ( Task $t ): bool => $t instanceof ContentTask );
+
+		return array_values( array_merge( $tasks, $content ) );
+	}
+
+	/**
+	 * Ask WordPress to rebuild rewrite rules at the end of the next `init`, after post types and
+	 * rules are registered. Use it after a change that affects URLs, such as a settings page
+	 * saving a new URL prefix. Works whether or not `flushRewriteRules()` was used.
+	 */
+	public function requestRewriteFlush(): void {
+		update_option( $this->optionName( 'flush_rewrite_rules' ), 1, false );
+	}
+
+	/**
+	 * Flash notices for this plugin's admin screens.
+	 */
+	public function notices(): Notices {
+		if ( null === $this->notices ) {
+			$this->notices = new Notices( $this );
+		}
+		return $this->notices;
+	}
+
+	/**
+	 * The version of an install that predates the framework, if `legacyVersion()` finds one.
+	 */
+	public function detectLegacyVersion(): ?string {
+		$detector = $this->legacyVersion;
+		if ( null === $detector ) {
+			return null;
+		}
+
+		$version = is_string( $detector ) ? get_option( $detector, null ) : $detector( $this );
+
+		if ( is_int( $version ) || is_float( $version ) ) {
+			$version = (string) $version;
+		}
+
+		return is_string( $version ) && '' !== trim( $version ) ? trim( $version ) : null;
 	}
 
 	/**

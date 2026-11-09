@@ -8,8 +8,31 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- `legacyVersion()`: recognise installs from before a plugin adopted the framework (by an option
+  name or a callback), and upgrade them from that version so their migrations run, rather than
+  treating them as fresh installs.
+- `options( ..., merge: true )`: fill in keys added to array option defaults on existing sites,
+  without changing stored values.
+- `postTypes()` and `taxonomies()`: on uninstall, delete the plugin's posts in every status
+  (including `auto-draft` and `trash`) with their meta, and its terms, registering each taxonomy
+  temporarily. Runs before custom tables are dropped.
+- `Plugin::requestRewriteFlush()`: rebuild rewrite rules at the end of the next `init`, whether or
+  not `flushRewriteRules()` is used.
+- `Plugin::notices()->flash()`: per-user admin notices that survive a redirect.
+- Release build guide and `bin/build-release.sh` in the example plugin, producing a small zip
+  without Composer's dev tools and failing if any reference is left unprefixed.
+- Guidance on how Strauss rewrites a plugin's own `use` statements, and how to re-run it.
 - Project website with all guides and a live deactivation survey demo: https://bignall.github.io/wp-foundation/
 - `homepage` in `composer.json`, linking Packagist to the website.
+
+### Fixed
+
+- The deactivation survey never appeared in plugins that prefix the library with Strauss: its
+  script and styles were outside `src/`, so they weren't copied. They now live in
+  `src/Feedback/assets/`, and the survey is skipped rather than half-loaded if they're missing.
+- The prefixing guide required `^1.0`, which no release satisfies. It now uses `^0.1`.
+- The example plugin built its survey inline and never used its `survey()` method, so the
+  `ACME_BOOKINGS_FEEDBACK_URL` handler never took effect.
 
 ## [0.1.1] - 2026-11-09
 

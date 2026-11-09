@@ -43,6 +43,48 @@ If the stored version is *newer* than the code (a downgrade), nothing runs.
 If the plugin is active but was never activated through WordPress (for example, enabled directly
 in the database or deployed as a must-use plugin), the first request installs it.
 
+## Adopting the framework in a plugin that has already shipped
+
+The framework decides between "fresh install" and "upgrade" by looking for `{prefix}_version`.
+A plugin that shipped before it used the framework has no such option, so every existing site
+would look like a fresh install, and the migrations that sites need would be skipped.
+
+Tell the framework how to recognise those installs with `legacyVersion()`:
+
+```php
+Plugin::create( __FILE__ )
+	// The name of an option that holds the old version...
+	->legacyVersion( 'acme_db_version' )
+	// ...or a callback that returns it, or null when the plugin was never installed.
+	->legacyVersion( fn () => get_option( 'acme_settings' ) ? '0.1.0' : null )
+	->migration( '0.2.0', [ Migrations::class, 'moveSettings' ] );
+```
+
+It's consulted only when no `{prefix}_version` is stored. If it finds a version older than the
+code's, that site is **upgraded** from it: migrations newer than that version run, then tasks
+sync tables, options and so on. `{prefix}_activated` reports `$firstTime` as false. If it finds
+the current version, the framework just starts tracking it. If it returns null, the site is
+treated as a fresh install.
+
+A string is always treated as an option name. To call a named function, wrap it in a closure.
+
+## Rewrite rules
+
+Flushing rewrite rules immediately often comes too early: the activation hook, or a settings
+page saving a new URL prefix, runs before the post types are registered with their new
+settings. Request a flush instead, and it runs at the end of the next `init`:
+
+```php
+add_action( 'update_option_acme_settings', function ( $old, $new ) use ( $plugin ) {
+	if ( ( $old['url_base'] ?? '' ) !== ( $new['url_base'] ?? '' ) ) {
+		$plugin->requestRewriteFlush();
+	}
+}, 10, 2 );
+```
+
+`->flushRewriteRules()` requests one after every activation and upgrade. `requestRewriteFlush()`
+works whether or not you use it.
+
 ## Deactivation
 
 Tasks' `deactivate()` methods run in reverse order: cron events are unscheduled and rewrite rules

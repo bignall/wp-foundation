@@ -31,14 +31,21 @@ final class Bootstrap {
 				wp: '6.4',
 				extensions: array( 'json' ),
 			)
+			// Before adopting WP Foundation, Acme Bookings 1.0 kept its schema version in its own
+			// option. Reading it means those sites get the 1.1.0 migration instead of a fresh install.
+			->legacyVersion( 'acme_bookings_db_version' )
+			// merge: settings keys added in later versions (services_slug in 1.1.0) are filled in
+			// on existing sites, without touching values the site owner has changed.
 			->options(
 				array(
 					'acme_bookings_settings' => array(
 						'slot_minutes'      => 30,
 						'remove_data'       => false,
 						'notification_mail' => '',
+						'services_slug'     => 'services',
 					),
-				)
+				),
+				merge: true
 			)
 			->role(
 				'acme_booking_manager',
@@ -55,12 +62,10 @@ final class Bootstrap {
 			->tables( new BookingsTable() )
 			->migration( '1.1.0', array( Migrations::class, 'backfillStatus' ) )
 			->flushRewriteRules()
-			->deactivationSurvey(
-				DeactivationSurvey::make()
-					->addReason( new Reason( 'too_expensive', __( 'The premium version costs too much', 'acme-bookings' ) ) )
-				// Uncomment to also send responses to your own endpoint:
-				// ->withHandler( new RemoteHandler( 'https://example.com/api/deactivation-feedback' ) ) .
-			)
+			// On uninstall (when remove_data is on), delete every service post and service type term.
+			->postTypes( App::POST_TYPE )
+			->taxonomies( App::TAXONOMY )
+			->deactivationSurvey( self::survey() )
 			// Only delete bookings on uninstall if the site owner opted in.
 			->deleteDataOnUninstall( static fn (): bool => ! empty( get_option( 'acme_bookings_settings' )['remove_data'] ) )
 			->onReady( static fn ( Plugin $plugin ) => ( new App( $plugin ) )->run() );

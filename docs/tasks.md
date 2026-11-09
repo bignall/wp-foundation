@@ -24,6 +24,17 @@ On multisite, each method runs once per site, with that site switched in.
 Uses `add_option()`, so existing values are never overwritten. Options added in a later version
 are created on upgrade.
 
+When a later version adds a **key** to an array option, existing sites don't get it, because the
+option already exists. Pass `merge: true` to fill in missing keys on activation and upgrade:
+
+```php
+->options( [ 'acme_settings' => [ 'mode' => 'simple', 'url_base' => 'go' ] ], merge: true )
+```
+
+A site that stored `[ 'mode' => 'advanced' ]` ends up with `[ 'mode' => 'advanced', 'url_base' => 'go' ]`.
+Existing values are never changed. Nested associative arrays are merged the same way, but lists
+(`[ 'a', 'b' ]`) are left as they are. Values that aren't arrays are never touched.
+
 ### Roles and capabilities
 
 ```php
@@ -55,13 +66,40 @@ every request, so WordPress can always reschedule them.
 ```
 
 The activation hook runs before your post types are registered, so flushing there would miss
-them. Instead, a flag is set on activation and upgrade, and the flush happens at the end of the
+them. Instead, a flush is requested on activation and upgrade, and happens at the end of the
 next `init`. On deactivation, the stored rules are deleted, so WordPress rebuilds them without
 yours.
 
+To flush after a change of your own, such as a settings page saving a new URL prefix, call
+`$plugin->requestRewriteFlush()`. See [Lifecycle and upgrades](lifecycle.md#rewrite-rules).
+
+### Posts and terms
+
+```php
+->postTypes( 'acme_booking', 'acme_resource' )
+->taxonomies( 'acme_booking_type' )
+```
+
+On uninstall, when data deletion is enabled, every post of these types is deleted with
+`wp_delete_post()`, which also removes its meta, comments and term relationships. Terms in these
+taxonomies are deleted with `wp_delete_term()`, which removes their meta. Nothing happens on
+activation or deactivation. Some details it takes care of:
+
+- **Every status.** `post_status => 'any'` skips `auto-draft` and `trash`, so the task asks for
+  every registered status.
+- **Unregistered taxonomies.** Your plugin's `init` code doesn't run during uninstall, so
+  `get_terms()` would find nothing. Each taxonomy is registered for the cleanup and unregistered
+  afterwards.
+- **Order.** Content is deleted before custom tables are dropped, in case delete hooks read them.
+- **Large sites.** Posts are deleted in batches of 100. Posts that fail to delete are skipped,
+  so the loop always ends.
+
+Attachments are deleted only if they are of one of the listed post types. Media uploaded to your
+posts becomes unattached.
+
 ### Tables
 
-See [database.md](database.md).
+See [Database tables and migrations](database.md).
 
 ## Custom tasks
 

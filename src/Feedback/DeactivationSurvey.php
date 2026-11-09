@@ -234,16 +234,30 @@ final class DeactivationSurvey {
 		}
 
 		$handle = "{$plugin->slug()}-deactivation-survey";
-		$assets = dirname( __DIR__, 2 ) . '/assets/';
+		$script = $this->readAsset( self::assetPath( 'deactivation-survey.js' ) );
+		if ( '' === $script ) {
+			// The asset is missing, e.g. a build left it out. Skip the survey; deactivation still works.
+			return;
+		}
 
 		// Assets are inlined so they work wherever the library is installed or prefixed.
 		wp_register_script( $handle, false, array(), $plugin->currentVersion(), true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
 		wp_enqueue_script( $handle );
-		wp_add_inline_script( $handle, $this->readAsset( $assets . 'deactivation-survey.js' ) . '(' . wp_json_encode( $this->scriptConfig( $plugin ) ) . ');' );
+		wp_add_inline_script( $handle, $script . '(' . wp_json_encode( $this->scriptConfig( $plugin ) ) . ');' );
 
 		wp_register_style( $handle, false, array(), $plugin->currentVersion() );
 		wp_enqueue_style( $handle );
-		wp_add_inline_style( $handle, $this->readAsset( $assets . 'deactivation-survey.css' ) );
+		wp_add_inline_style( $handle, $this->readAsset( self::assetPath( 'deactivation-survey.css' ) ) );
+	}
+
+	/**
+	 * Absolute path to a survey asset. Assets live under src/ so tools that copy a package's
+	 * autoloaded directories, such as Strauss, include them.
+	 *
+	 * @param string $file File name.
+	 */
+	public static function assetPath( string $file ): string {
+		return __DIR__ . '/assets/' . $file;
 	}
 
 	/**

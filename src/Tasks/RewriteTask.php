@@ -16,8 +16,8 @@ use Bignall\WPFoundation\Plugin;
  * deactivation.
  *
  * The activation hook runs after `init`, before the plugin has registered its post types, so
- * flushing there would miss them. Instead, a flag is set and the flush happens late on the
- * next `init`.
+ * flushing there would miss them. Instead, a flush is requested with
+ * `Plugin::requestRewriteFlush()` and happens late on the next `init`.
  */
 final class RewriteTask extends AbstractTask {
 
@@ -26,27 +26,8 @@ final class RewriteTask extends AbstractTask {
 	 *
 	 * @param Plugin $plugin The plugin.
 	 */
-	public function register( Plugin $plugin ): void {
-		add_action(
-			'init',
-			static function () use ( $plugin ): void {
-				$flag = $plugin->optionName( 'flush_rewrite_rules' );
-				if ( get_option( $flag ) ) {
-					delete_option( $flag );
-					flush_rewrite_rules( false );
-				}
-			},
-			PHP_INT_MAX
-		);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param Plugin $plugin The plugin.
-	 */
 	public function activate( Plugin $plugin ): void {
-		update_option( $plugin->optionName( 'flush_rewrite_rules' ), 1, false );
+		$plugin->requestRewriteFlush();
 	}
 
 	/**

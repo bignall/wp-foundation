@@ -31,7 +31,9 @@ const summaries = {
 	database: 'Custom tables kept in sync with dbDelta, and versioned migrations that resume after a failure.',
 	'deactivation-survey': 'Ask why people deactivate, customise the reasons, and send answers where you want.',
 	multisite: 'Network activation, new sites, deleted sites, and how to handle very large networks.',
+	notices: 'Show a notice on the next admin page after a form redirects, without writing it yourself.',
 	prefixing: 'Bundle the library safely alongside other plugins by prefixing it with Strauss.',
+	releasing: 'Build a small release zip that leaves out Composer\'s dev tools, and check the prefixing.',
 	hooks: 'Every action, filter and option the framework adds, with their arguments.',
 };
 const docs = Object.keys( summaries );
@@ -257,7 +259,7 @@ function surveyDemoScript() {
 			required: 'Please choose a reason, or skip.',
 		},
 	};
-	return `${ read( 'assets/deactivation-survey.js' ).trim() }(${ JSON.stringify( config ) });\n`;
+	return `${ read( 'src/Feedback/assets/deactivation-survey.js' ).trim() }(${ JSON.stringify( config ) });\n`;
 }
 
 function landingPage() {
@@ -293,7 +295,7 @@ rmSync( out, { recursive: true, force: true } );
 mkdirSync( join( out, 'assets' ), { recursive: true } );
 
 cpSync( join( root, 'site/assets' ), join( out, 'assets' ), { recursive: true } );
-writeFileSync( join( out, 'assets/survey.css' ), read( 'assets/deactivation-survey.css' ) );
+writeFileSync( join( out, 'assets/survey.css' ), read( 'src/Feedback/assets/deactivation-survey.css' ) );
 writeFileSync( join( out, 'assets/survey-demo.js' ), surveyDemoScript() );
 writeFileSync( join( out, '.nojekyll' ), '' );
 
