@@ -1,0 +1,188 @@
+<section class="hero">
+	<div class="wrap hero-inner">
+		<div class="hero-copy">
+			<p class="eyebrow">Composer library for WordPress plugins · v{{version}}</p>
+			<h1>Install, upgrade and uninstall, handled.</h1>
+			<p class="lead">WP Foundation takes care of the lifecycle work every WordPress plugin needs: requirement checks, activation, upgrades with migrations, uninstall cleanup and multisite. It can also ask people why they're deactivating.</p>
+			<div class="install">
+				<code id="install-command">composer require {{package}}</code>
+				<button type="button" class="copy" data-copy="#install-command">Copy</button>
+			</div>
+			<p class="hero-actions">
+				<a class="btn btn-primary" href="getting-started.html">Read the guide</a>
+				<a class="btn" href="{{repo}}" rel="noopener">View on GitHub</a>
+			</p>
+			<p class="meta">PHP 8.1+ · WordPress 6.4+ · GPL-2.0-or-later</p>
+		</div>
+		<div class="hero-code">
+			<div class="window">
+				<div class="window-bar"><span></span><span></span><span></span><em>acme-bookings.php</em></div>
+{{code:php}}
+Plugin::create( __FILE__ )
+	->requires( php: '8.1', wp: '6.4' )
+	->options( [ 'acme_settings' => [ 'slots' => 30 ] ] )
+	->role( 'acme_manager', 'Booking Manager' )
+	->cron( 'acme_send_reminders', 'hourly' )
+	->tables( new BookingsTable() )
+	->migration( '1.1.0', [ Migrations::class, 'addStatus' ] )
+	->flushRewriteRules()
+	->deactivationSurvey()
+	->deleteDataOnUninstall()
+	->onReady( fn () => App::run() )
+	->boot();
+{{/code}}
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="section" aria-labelledby="lifecycle-title">
+	<div class="wrap">
+		<h2 id="lifecycle-title">One definition covers every stage</h2>
+		<p class="section-lead">Describe what your plugin needs once. WP Foundation sets it up, keeps it current, and removes it when asked.</p>
+		<ol class="stages">
+			<li>
+				<h3>Activation</h3>
+				<p>Checks requirements first and refuses to activate with a clear message if they aren't met. Then creates tables, default options, roles, capabilities and cron events.</p>
+			</li>
+			<li>
+				<h3>Every request</h3>
+				<p>Checks requirements again, in case a plugin you depend on was switched off. If something is missing, admins see a notice, and your code doesn't run.</p>
+			</li>
+			<li>
+				<h3>Upgrade</h3>
+				<p>Spots a new version, including automatic updates, and runs your migrations in order. Then it syncs table schemas and adds new options and capabilities.</p>
+			</li>
+			<li>
+				<h3>Deactivation</h3>
+				<p>Unschedules cron events and removes rewrite rules, but keeps the site's data. It can optionally ask why the plugin is being deactivated.</p>
+			</li>
+			<li>
+				<h3>Uninstall</h3>
+				<p>Drops tables and removes options, roles and cron events, but only if you opt in or the site owner chooses to.</p>
+			</li>
+			<li>
+				<h3>Multisite</h3>
+				<p>Network activation and uninstall reach every site. New sites are set up automatically, and deleted sites take their tables with them.</p>
+			</li>
+		</ol>
+	</div>
+</section>
+
+<section class="section section-alt" aria-labelledby="details-title">
+	<div class="wrap">
+		<h2 id="details-title">The details plugins usually get wrong</h2>
+		<p class="section-lead">These are the edge cases that cause white screens, missing tables and broken permalinks. WP Foundation handles them for you.</p>
+		<dl class="details">
+			<div>
+				<dt>Automatic updates skip the activation hook</dt>
+				<dd>Upgrades run when a page loads, not only on activation. A lock stops two requests from running the same migration.</dd>
+			</div>
+			<div>
+				<dt>Activation runs before your post types exist</dt>
+				<dd>Flushing rewrite rules there misses your post types. The flush is put off to the end of the next <code>init</code>, after they're registered.</dd>
+			</div>
+			<div>
+				<dt>A failed migration shouldn't break the site</dt>
+				<dd>The stored version only advances past migrations that finished. Admins see the error, and the next page load resumes where it stopped.</dd>
+			</div>
+			<div>
+				<dt>Old PHP versions shouldn't white-screen the site</dt>
+				<dd>A version guard in your main file and Composer's platform check switched off mean old hosts get a notice, not a fatal error.</dd>
+			</div>
+			<div>
+				<dt>Uninstall shouldn't surprise anyone</dt>
+				<dd>Data is kept unless you opt in, or let the site owner decide with a setting. A filter has the final say.</dd>
+			</div>
+			<div>
+				<dt>Two plugins can bundle different versions</dt>
+				<dd>The library is designed to be prefixed with Strauss, and its survey script and styles are inlined, so each plugin keeps its own copy.</dd>
+			</div>
+		</dl>
+	</div>
+</section>
+
+<section class="section" aria-labelledby="survey-title">
+	<div class="wrap survey">
+		<div class="survey-copy">
+			<h2 id="survey-title">Ask why they're leaving</h2>
+			<p>When someone clicks <strong>Deactivate</strong>, a short survey asks why. The answer goes to your handler: stored on the site, sent to your server, or both.</p>
+			<ul class="checks">
+				<li>Skippable, and deactivation always goes ahead, even if sending fails.</li>
+				<li>Add, remove or replace reasons, and ask for details where they help.</li>
+				<li>Says when answers leave the site, and only includes the site address if the user agrees.</li>
+				<li>Protected by a nonce and a capability check, with input sanitized and length-limited.</li>
+			</ul>
+			<p><a href="deactivation-survey.html">Survey guide →</a></p>
+		</div>
+		<div class="survey-demo">
+			<p class="demo-label">Try it: this is the plugin's own survey script</p>
+			<div class="demo-screen">
+				<p class="demo-title">Plugins</p>
+				<table class="demo-plugins">
+					<thead>
+						<tr><th scope="col">Plugin</th><th scope="col">Description</th></tr>
+					</thead>
+					<tbody>
+						<tr data-plugin="acme-bookings/acme-bookings.php" class="active">
+							<td>
+								<strong>Acme Bookings</strong>
+								<div class="row-actions">
+									<span>Settings</span> |
+									<span class="deactivate"><a href="#demo-deactivated">Deactivate</a></span>
+									<span class="activate" hidden><a href="#">Activate</a></span>
+								</div>
+							</td>
+							<td>Example plugin built on WP Foundation. Version 1.1.0</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="demo-output">
+				<p class="demo-label">What your feedback handler receives</p>
+				<pre class="code" id="demo-output"><code>Click Deactivate to try the survey.</code></pre>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="section section-alt" aria-labelledby="start-title">
+	<div class="wrap">
+		<h2 id="start-title">Get started in three steps</h2>
+		<ol class="steps">
+			<li>
+				<h3>Require the library</h3>
+{{code:bash}}
+composer require {{package}}
+{{/code}}
+			</li>
+			<li>
+				<h3>Describe your plugin</h3>
+{{code:php}}
+use Bignall\WPFoundation\Plugin;
+
+Plugin::create( __FILE__ )
+	->requires( wp: '6.4' )
+	->options( [ 'acme_settings' => [] ] )
+	->onReady( fn () => Acme\App::run() )
+	->boot();
+{{/code}}
+			</li>
+			<li>
+				<h3>Bump the version and ship</h3>
+				<p>Change the <code>Version:</code> header in your plugin file. Next time a site loads a page, the upgrade runs. Prefix the library with Strauss before you release.</p>
+				<p><a href="getting-started.html">Full getting-started guide →</a></p>
+			</li>
+		</ol>
+	</div>
+</section>
+
+<section class="section" aria-labelledby="docs-title">
+	<div class="wrap">
+		<h2 id="docs-title">Guides</h2>
+		<ul class="doc-cards">
+{{docCards}}
+		</ul>
+		<p class="tested">Tested in CI on PHP 8.1 to 8.4 and WordPress 6.4 to latest, single site and multisite.</p>
+	</div>
+</section>

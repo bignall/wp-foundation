@@ -3,6 +3,7 @@
 	"description": "Lifecycle framework for WordPress plugins: requirement checks, activation, deactivation, upgrades and migrations, uninstall, multisite and deactivation feedback.",
 	"type": "library",
 	"license": "GPL-2.0-or-later",
+	"homepage": "https://bignall.github.io/wp-foundation/",
 	"keywords": [
 		"wordpress",
 		"plugin",

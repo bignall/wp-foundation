@@ -3,6 +3,8 @@
 [![CI](https://github.com/bignall/wp-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/bignall/wp-foundation/actions/workflows/ci.yml)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](LICENSE)
 
+**Website and docs: https://bignall.github.io/wp-foundation/**
+
 A Composer library that handles the parts of a WordPress plugin that every plugin needs and few
 get right: **requirement checks, activation, deactivation, upgrades with migrations, uninstall
 cleanup, multisite**, and an optional **deactivation survey** that asks users why they're leaving.
@@ -126,6 +128,9 @@ WP_MULTISITE=1 WP_TESTS_DIR=/tmp/wordpress-develop/tests/phpunit composer test:i
 
 # Browser test for the survey modal
 npm install && npx playwright install chromium && npm run test:browser
+
+# Website (built from site/ and docs/ into _site/, deployed to GitHub Pages)
+npm run site:build
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).

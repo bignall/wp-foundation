@@ -1,12 +1,15 @@
 {
 	"name": "wp-foundation",
 	"private": true,
-	"description": "Browser tests for bignall/wp-foundation assets.",
+	"description": "Site build and browser tests for bignall/wp-foundation.",
 	"license": "GPL-2.0-or-later",
 	"scripts": {
+		"site:build": "node site/build.mjs",
 		"test:browser": "node tests/Browser/deactivation-survey.test.js"
 	},
 	"devDependencies": {
+		"highlight.js": "^11.12.0",
+		"marked": "^18.1.3",
 		"playwright": "^1.48.0"
 	}
 }
