@@ -68,7 +68,7 @@ final class Notices {
 		$notices[] = array(
 			'type'    => in_array( $type, self::TYPES, true ) ? $type : 'info',
 			'message' => $message,
-			'items'   => array_values( array_map( 'strval', $items ) ),
+			'items'   => array_map( 'strval', $items ),
 		);
 
 		return set_transient( $key, $notices, self::LIFETIME );
