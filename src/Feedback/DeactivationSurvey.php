@@ -144,17 +144,16 @@ final class DeactivationSurvey {
 		 * @param list<Reason> $reasons Reasons.
 		 * @param Plugin       $plugin  The plugin.
 		 */
-		$filtered = apply_filters( "{$plugin->prefix()}_deactivation_reasons", array_values( $this->reasons ), $plugin );
+		$reasons = apply_filters( "{$plugin->prefix()}_deactivation_reasons", array_values( $this->reasons ), $plugin );
 
 		// Other code can return anything from the filter, so keep only valid reasons.
-		$reasons = array();
-		foreach ( is_array( $filtered ) ? $filtered : array() as $reason ) {
-			if ( is_object( $reason ) && is_a( $reason, Reason::class ) ) {
-				$reasons[] = $reason;
-			}
-		}
-
-		return $reasons;
+		return array_values(
+			array_filter(
+				(array) $reasons,
+				// @phpstan-ignore instanceof.alwaysTrue
+				static fn ( $r ): bool => $r instanceof Reason
+			)
+		);
 	}
 
 	/**
