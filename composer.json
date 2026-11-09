@@ -1,0 +1,61 @@
+{
+	"name": "arbe/wp-foundation",
+	"description": "Lifecycle framework for WordPress plugins: requirement checks, activation, deactivation, upgrades and migrations, uninstall, multisite and deactivation feedback.",
+	"type": "library",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"wordpress",
+		"plugin",
+		"framework",
+		"activation",
+		"deactivation",
+		"uninstall",
+		"migrations",
+		"multisite"
+	],
+	"authors": [
+		{
+			"name": "Arbe",
+			"email": "rosina@arbe.co"
+		}
+	],
+	"require": {
+		"php": ">=8.1"
+	},
+	"require-dev": {
+		"brain/monkey": "^2.6",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"phpstan/extension-installer": "^1.4",
+		"phpstan/phpstan": "^2.1",
+		"phpunit/phpunit": "^9.6",
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"wp-coding-standards/wpcs": "^3.1",
+		"yoast/phpunit-polyfills": "^2.0 || ^3.0 || ^4.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Arbe\\WPFoundation\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Arbe\\WPFoundation\\Tests\\": "tests/"
+		}
+	},
+	"scripts": {
+		"test": "@test:unit",
+		"test:unit": "phpunit --testsuite unit",
+		"test:integration": "phpunit -c phpunit-integration.xml.dist",
+		"lint": "phpcs",
+		"lint:fix": "phpcbf",
+		"analyse": "phpstan analyse --memory-limit=1G"
+	},
+	"config": {
+		"sort-packages": true,
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		}
+	},
+	"minimum-stability": "stable"
+}

@@ -1,0 +1,44 @@
+.wpf-survey {
+	width: min(32rem, calc(100vw - 2rem));
+	padding: 1.5rem;
+	border: 0;
+	border-radius: 4px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+.wpf-survey::backdrop {
+	background: rgba(0, 0, 0, 0.6);
+}
+.wpf-survey h2 {
+	margin-top: 0;
+}
+.wpf-survey__reasons {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.wpf-survey__reasons li {
+	margin-bottom: 0.5rem;
+}
+.wpf-survey__reasons textarea {
+	display: block;
+	width: 100%;
+	margin: 0.4rem 0 0 1.5rem;
+	max-width: calc(100% - 1.5rem);
+}
+.wpf-survey__reasons textarea[hidden],
+.wpf-survey__error[hidden] {
+	display: none;
+}
+.wpf-survey__error {
+	color: #d63638;
+}
+.wpf-survey__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+	margin-top: 1.25rem;
+}
+.wpf-survey__spacer {
+	flex: 1;
+}

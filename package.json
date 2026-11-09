@@ -1,0 +1,12 @@
+{
+	"name": "wp-foundation",
+	"private": true,
+	"description": "Browser tests for arbe/wp-foundation assets.",
+	"license": "GPL-2.0-or-later",
+	"scripts": {
+		"test:browser": "node tests/Browser/deactivation-survey.test.js"
+	},
+	"devDependencies": {
+		"playwright": "^1.48.0"
+	}
+}

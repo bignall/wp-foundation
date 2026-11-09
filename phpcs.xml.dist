@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<ruleset name="WP Foundation">
+	<description>WordPress Coding Standards, with PSR-4 file names and camelCase methods.</description>
+
+	<file>src</file>
+	<file>tests</file>
+	<file>examples/acme-bookings/acme-bookings.php</file>
+	<file>examples/acme-bookings/src</file>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<config name="testVersion" value="8.1-"/>
+	<config name="minimum_wp_version" value="6.4"/>
+
+	<rule ref="WordPress">
+		<!-- PSR-4 autoloading. -->
+		<exclude name="WordPress.Files.FileName"/>
+		<!-- camelCase methods, properties and variables. -->
+		<exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+		<exclude name="WordPress.NamingConventions.ValidVariableName"/>
+		<!-- Modern PHP. -->
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+		<exclude name="Universal.Operators.DisallowShortTernary"/>
+		<exclude name="Generic.Commenting.DocComment.MissingShort"/>
+		<!-- PHPStan generics such as list<string> in docblocks. -->
+		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
+		<!-- Typed properties and promoted constructor parameters document themselves. -->
+		<exclude name="Squiz.Commenting.VariableComment.Missing"/>
+		<exclude name="Squiz.Commenting.LongConditionClosingComment"/>
+		<exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames"/>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="wp-foundation"/>
+				<element value="acme-bookings"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Tests don't need full docblocks. -->
+	<rule ref="Squiz.Commenting">
+		<exclude-pattern>tests/*</exclude-pattern>
+	</rule>
+	<rule ref="Generic.Commenting">
+		<exclude-pattern>tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>tests/*</exclude-pattern>
+	</rule>
+</ruleset>

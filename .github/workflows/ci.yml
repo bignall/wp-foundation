@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: PHPCS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+      - uses: ramsey/composer-install@v3
+      - run: composer lint
+
+  analyse:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+      - uses: ramsey/composer-install@v3
+      - run: composer analyse
+
+  unit:
+    name: Unit (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+      - uses: ramsey/composer-install@v3
+      - run: composer test:unit
+
+  integration:
+    name: Integration (PHP ${{ matrix.php }}, WP ${{ matrix.wp }}${{ matrix.multisite == '1' && ', multisite' || '' }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.3']
+        wp: ['6.4', 'latest']
+        multisite: ['0', '1']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_tests
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      WP_DEVELOP_DIR: /tmp/wordpress-develop
+      WP_TESTS_DIR: /tmp/wordpress-develop/tests/phpunit
+      WP_MULTISITE: ${{ matrix.multisite }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli
+          tools: composer:v2
+          coverage: none
+      - uses: ramsey/composer-install@v3
+      - name: Install WordPress test library
+        run: bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1:3306 ${{ matrix.wp }} true
+      - run: composer test:integration
+
+  browser:
+    name: Browser (deactivation survey)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
