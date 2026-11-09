@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-09
+
+### Fixed
+
+- Default options now pass a boolean `autoload` to `add_option()`, matching the WordPress 6.6+ signature (still supported on 6.4).
+- The filtered list of deactivation reasons still drops anything that isn't a `Reason`, with static analysis passing.
+
+### Changed
+
+- CI uses `actions/checkout@v7`, `actions/setup-node@v7` and `ramsey/composer-install@v4`, which run on Node 24.
+
 ## [0.1.0] - 2026-11-09
 
 ### Added
@@ -17,5 +28,6 @@ All notable changes to this project are documented here. The format follows
 - Multisite support: network activation and uninstall, new-site setup, table cleanup on site deletion.
 - Deactivation survey with configurable reasons, local storage, a remote handler and consent for the site URL.
 
-[Unreleased]: https://github.com/bignall/wp-foundation/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/bignall/wp-foundation/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/bignall/wp-foundation/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bignall/wp-foundation/releases/tag/v0.1.0
