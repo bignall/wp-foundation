@@ -1,6 +1,6 @@
 # WP Foundation
 
-[![CI](https://github.com/arbe/wp-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/arbe/wp-foundation/actions/workflows/ci.yml)
+[![CI](https://github.com/bignall/wp-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/bignall/wp-foundation/actions/workflows/ci.yml)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](LICENSE)
 
 A Composer library that handles the parts of a WordPress plugin that every plugin needs and few

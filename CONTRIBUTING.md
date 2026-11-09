@@ -5,7 +5,7 @@ Thanks for helping. Bug reports, docs fixes and pull requests are all welcome.
 ## Setup
 
 ```bash
-git clone https://github.com/arbe/wp-foundation.git
+git clone https://github.com/bignall/wp-foundation.git
 cd wp-foundation
 composer install
 ```
