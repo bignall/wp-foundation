@@ -2,14 +2,14 @@
 /**
  * Default options.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tasks;
+namespace Bignall\WPFoundation\Tasks;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Adds default option values without overwriting existing ones, and deletes them on uninstall.

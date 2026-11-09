@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace AcmeBookings;
 
-use Arbe\WPFoundation\Database\Table;
+use Bignall\WPFoundation\Database\Table;
 
 /**
  * Stores bookings. The `status` column was added in 1.1.0; dbDelta adds it on upgrade.

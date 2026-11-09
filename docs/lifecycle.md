@@ -75,5 +75,5 @@ If you need one, load the main file and hand off to the framework:
 <?php
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 require_once __DIR__ . '/acme-bookings.php';
-Arbe\WPFoundation\Plugin::instance( 'acme-bookings/acme-bookings.php' )?->lifecycle()->uninstall();
+Bignall\WPFoundation\Plugin::instance( 'acme-bookings/acme-bookings.php' )?->lifecycle()->uninstall();
 ```

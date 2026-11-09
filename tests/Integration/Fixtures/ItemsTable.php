@@ -2,14 +2,14 @@
 /**
  * Fixture table.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Integration\Fixtures;
+namespace Bignall\WPFoundation\Tests\Integration\Fixtures;
 
-use Arbe\WPFoundation\Database\Table;
+use Bignall\WPFoundation\Database\Table;
 
 final class ItemsTable extends Table {
 

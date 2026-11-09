@@ -2,14 +2,14 @@
 /**
  * Rewrite rules.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tasks;
+namespace Bignall\WPFoundation\Tasks;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Flushes rewrite rules after activation or upgrade, and removes the plugin's rules on

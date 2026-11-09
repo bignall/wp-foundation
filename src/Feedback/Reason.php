@@ -2,12 +2,12 @@
 /**
  * Deactivation reason.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Feedback;
+namespace Bignall\WPFoundation\Feedback;
 
 /**
  * One answer to "why are you deactivating?".

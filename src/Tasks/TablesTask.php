@@ -2,15 +2,15 @@
 /**
  * Custom tables.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tasks;
+namespace Bignall\WPFoundation\Tasks;
 
-use Arbe\WPFoundation\Database\Table;
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Database\Table;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Creates and updates custom tables with dbDelta, drops them on uninstall, and drops each

@@ -1,5 +1,5 @@
 /**
- * Deactivation survey for plugins built on Arbe WP Foundation.
+ * Deactivation survey for plugins built on WP Foundation.
  *
  * This file is a function expression; PHP appends the config and the call:
  * `(function (config) { ... })({ ...config });`

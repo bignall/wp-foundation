@@ -28,7 +28,7 @@ add_filter( 'acme_network_site_ids', function ( array $ids ) {
 
 add_action( 'acme_activate_site', function ( int $id ) {
 	switch_to_blog( $id );
-	Arbe\WPFoundation\Plugin::instance( 'acme/acme.php' )->lifecycle()->activateSite();
+	Bignall\WPFoundation\Plugin::instance( 'acme/acme.php' )->lifecycle()->activateSite();
 	restore_current_blog();
 } );
 ```

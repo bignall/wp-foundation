@@ -2,12 +2,12 @@
 /**
  * Environment requirements.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Requirements;
+namespace Bignall\WPFoundation\Requirements;
 
 /**
  * Checks PHP and WordPress versions, PHP extensions, required plugins and custom conditions.

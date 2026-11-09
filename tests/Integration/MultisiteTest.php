@@ -2,16 +2,16 @@
 /**
  * Multisite behaviour. Run with WP_MULTISITE=1.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
 // phpcs:disable WordPress.DB -- Tests inspect the database directly.
 
-namespace Arbe\WPFoundation\Tests\Integration;
+namespace Bignall\WPFoundation\Tests\Integration;
 
-use Arbe\WPFoundation\Tests\Integration\Fixtures\ItemsTable;
+use Bignall\WPFoundation\Tests\Integration\Fixtures\ItemsTable;
 
 /**
  * @group multisite

@@ -5,7 +5,7 @@
 Describe each table's **current** shape by extending `Table`:
 
 ```php
-use Arbe\WPFoundation\Database\Table;
+use Bignall\WPFoundation\Database\Table;
 
 final class BookingsTable extends Table {
 	public function name(): string {
@@ -52,7 +52,7 @@ A migration is a one-time change tied to the version that introduced it:
 } )
 ```
 
-Or as a class implementing `Arbe\WPFoundation\Database\Migration` (`version()` and `up()`),
+Or as a class implementing `Bignall\WPFoundation\Database\Migration` (`version()` and `up()`),
 registered with `->migrations( new RenameWhenColumn(), new BackfillStatus() )`.
 
 ### How they run

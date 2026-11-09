@@ -2,14 +2,14 @@
 /**
  * Base task with no-op defaults.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tasks;
+namespace Bignall\WPFoundation\Tasks;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Extend this to implement only the lifecycle steps a task needs.

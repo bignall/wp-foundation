@@ -2,15 +2,15 @@
 /**
  * Migrator tests.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Unit;
+namespace Bignall\WPFoundation\Tests\Unit;
 
-use Arbe\WPFoundation\Database\CallbackMigration;
-use Arbe\WPFoundation\Database\Migrator;
+use Bignall\WPFoundation\Database\CallbackMigration;
+use Bignall\WPFoundation\Database\Migrator;
 use Brain\Monkey\Actions;
 use RuntimeException;
 

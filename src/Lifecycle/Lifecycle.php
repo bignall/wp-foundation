@@ -2,15 +2,15 @@
 /**
  * Lifecycle manager.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Lifecycle;
+namespace Bignall\WPFoundation\Lifecycle;
 
-use Arbe\WPFoundation\Database\Migrator;
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Database\Migrator;
+use Bignall\WPFoundation\Plugin;
 use WP_Site;
 
 /**

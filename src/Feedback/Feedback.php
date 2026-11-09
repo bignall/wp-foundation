@@ -2,12 +2,12 @@
 /**
  * Deactivation feedback.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Feedback;
+namespace Bignall\WPFoundation\Feedback;
 
 /**
  * A submitted survey response. Contains no personal data unless the user agreed to share

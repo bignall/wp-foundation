@@ -2,16 +2,16 @@
 /**
  * Stores feedback on the site.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Feedback\Handlers;
+namespace Bignall\WPFoundation\Feedback\Handlers;
 
-use Arbe\WPFoundation\Feedback\Feedback;
-use Arbe\WPFoundation\Feedback\FeedbackHandler;
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Feedback\Feedback;
+use Bignall\WPFoundation\Feedback\FeedbackHandler;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Keeps the most recent responses in a non-autoloaded option, `{prefix}_deactivation_feedback`.

@@ -2,14 +2,14 @@
 /**
  * Lifecycle task contract.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tasks;
+namespace Bignall\WPFoundation\Tasks;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * A unit of setup and teardown work. Each method runs on the current site; on multisite the

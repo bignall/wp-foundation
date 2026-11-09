@@ -2,12 +2,12 @@
 /**
  * Lifecycle tests.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Unit;
+namespace Bignall\WPFoundation\Tests\Unit;
 
 use ArrayObject;
 use Brain\Monkey\Actions;

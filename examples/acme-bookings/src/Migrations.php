@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace AcmeBookings;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Migrations run in version order when a site upgrades.

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace AcmeBookings;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * The plugin's own features. Runs only once requirements pass and upgrades are done.

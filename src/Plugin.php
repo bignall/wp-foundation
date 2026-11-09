@@ -2,25 +2,25 @@
 /**
  * Plugin definition and entry point.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation;
+namespace Bignall\WPFoundation;
 
-use Arbe\WPFoundation\Database\CallbackMigration;
-use Arbe\WPFoundation\Database\Migration;
-use Arbe\WPFoundation\Database\Table;
-use Arbe\WPFoundation\Feedback\DeactivationSurvey;
-use Arbe\WPFoundation\Lifecycle\Lifecycle;
-use Arbe\WPFoundation\Requirements\Requirements;
-use Arbe\WPFoundation\Tasks\CronTask;
-use Arbe\WPFoundation\Tasks\OptionsTask;
-use Arbe\WPFoundation\Tasks\RewriteTask;
-use Arbe\WPFoundation\Tasks\RolesTask;
-use Arbe\WPFoundation\Tasks\TablesTask;
-use Arbe\WPFoundation\Tasks\Task;
+use Bignall\WPFoundation\Database\CallbackMigration;
+use Bignall\WPFoundation\Database\Migration;
+use Bignall\WPFoundation\Database\Table;
+use Bignall\WPFoundation\Feedback\DeactivationSurvey;
+use Bignall\WPFoundation\Lifecycle\Lifecycle;
+use Bignall\WPFoundation\Requirements\Requirements;
+use Bignall\WPFoundation\Tasks\CronTask;
+use Bignall\WPFoundation\Tasks\OptionsTask;
+use Bignall\WPFoundation\Tasks\RewriteTask;
+use Bignall\WPFoundation\Tasks\RolesTask;
+use Bignall\WPFoundation\Tasks\TablesTask;
+use Bignall\WPFoundation\Tasks\Task;
 
 /**
  * Describes a WordPress plugin and wires its lifecycle into WordPress.

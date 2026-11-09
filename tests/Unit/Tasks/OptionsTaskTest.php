@@ -2,15 +2,15 @@
 /**
  * Options task tests.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Unit\Tasks;
+namespace Bignall\WPFoundation\Tests\Unit\Tasks;
 
-use Arbe\WPFoundation\Tasks\OptionsTask;
-use Arbe\WPFoundation\Tests\Unit\TestCase;
+use Bignall\WPFoundation\Tasks\OptionsTask;
+use Bignall\WPFoundation\Tests\Unit\TestCase;
 
 final class OptionsTaskTest extends TestCase {
 

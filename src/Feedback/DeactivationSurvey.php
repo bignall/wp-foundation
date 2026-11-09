@@ -2,15 +2,15 @@
 /**
  * Deactivation survey.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Feedback;
+namespace Bignall\WPFoundation\Feedback;
 
-use Arbe\WPFoundation\Feedback\Handlers\LocalHandler;
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Feedback\Handlers\LocalHandler;
+use Bignall\WPFoundation\Plugin;
 use Throwable;
 
 /**

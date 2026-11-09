@@ -1,8 +1,8 @@
 # Prefixing with Strauss
 
 WordPress loads every plugin into one PHP process. If two plugins bundle different versions of
-`Arbe\WPFoundation`, whichever loads first wins, and the other plugin may break. Prefixing
-rewrites the library's namespace inside your plugin, e.g. to `AcmeBookings\Vendor\Arbe\WPFoundation`,
+`Bignall\WPFoundation`, whichever loads first wins, and the other plugin may break. Prefixing
+rewrites the library's namespace inside your plugin, e.g. to `AcmeBookings\Vendor\Bignall\WPFoundation`,
 so each plugin has its own copy.
 
 [Strauss](https://github.com/BrianHenryIE/strauss) does this as part of `composer install`:

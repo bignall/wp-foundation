@@ -2,7 +2,7 @@
 /**
  * Integration test bootstrap. Requires the WordPress test library; see bin/install-wp-tests.sh.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 $root     = dirname( __DIR__, 2 );

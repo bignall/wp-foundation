@@ -34,12 +34,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Arbe\\WPFoundation\\": "src/"
+			"Bignall\\WPFoundation\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Arbe\\WPFoundation\\Tests\\": "tests/"
+			"Bignall\\WPFoundation\\Tests\\": "tests/"
 		}
 	},
 	"scripts": {

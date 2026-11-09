@@ -2,14 +2,14 @@
 /**
  * Feedback handler contract.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Feedback;
+namespace Bignall\WPFoundation\Feedback;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Receives deactivation feedback. Implement this to send responses to your own service.

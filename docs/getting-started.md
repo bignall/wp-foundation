@@ -25,7 +25,7 @@ if ( version_compare( PHP_VERSION, '8.1', '<' ) ) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 Plugin::create( __FILE__ )
 	->requires( php: '8.1', wp: '6.4' )

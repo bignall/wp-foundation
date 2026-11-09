@@ -2,15 +2,15 @@
 /**
  * Base integration test case.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Integration;
+namespace Bignall\WPFoundation\Tests\Integration;
 
-use Arbe\WPFoundation\Plugin;
-use Arbe\WPFoundation\Tests\Integration\Fixtures\ItemsTable;
+use Bignall\WPFoundation\Plugin;
+use Bignall\WPFoundation\Tests\Integration\Fixtures\ItemsTable;
 use WP_UnitTestCase;
 
 abstract class IntegrationTestCase extends WP_UnitTestCase {

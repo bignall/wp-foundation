@@ -26,8 +26,8 @@ caught.
 ## Customising
 
 ```php
-use Arbe\WPFoundation\Feedback\DeactivationSurvey;
-use Arbe\WPFoundation\Feedback\Reason;
+use Bignall\WPFoundation\Feedback\DeactivationSurvey;
+use Bignall\WPFoundation\Feedback\Reason;
 
 ->deactivationSurvey(
 	DeactivationSurvey::make()
@@ -53,7 +53,7 @@ timestamp, and the site URL *only if the user consented*.
 `{prefix}_deactivation_feedback`. Read them, for example after reactivation, with:
 
 ```php
-use Arbe\WPFoundation\Feedback\Handlers\LocalHandler;
+use Bignall\WPFoundation\Feedback\Handlers\LocalHandler;
 
 $entries = LocalHandler::entries( $plugin );
 ```
@@ -64,7 +64,7 @@ They're deleted on uninstall when data deletion is enabled. To stop storing loca
 ### Sent to your server
 
 ```php
-use Arbe\WPFoundation\Feedback\Handlers\RemoteHandler;
+use Bignall\WPFoundation\Feedback\Handlers\RemoteHandler;
 
 DeactivationSurvey::make()
 	->withHandler( new RemoteHandler(
@@ -83,9 +83,9 @@ off the site. Mention the survey in your readme and privacy policy.
 ### Your own handler
 
 ```php
-use Arbe\WPFoundation\Feedback\Feedback;
-use Arbe\WPFoundation\Feedback\FeedbackHandler;
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Feedback\Feedback;
+use Bignall\WPFoundation\Feedback\FeedbackHandler;
+use Bignall\WPFoundation\Plugin;
 
 final class SlackHandler implements FeedbackHandler {
 	public function handle( Feedback $feedback, Plugin $plugin ): void {

@@ -2,14 +2,14 @@
 /**
  * Migration contract.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Database;
+namespace Bignall\WPFoundation\Database;
 
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * A one-way data or schema change introduced in a given plugin version.

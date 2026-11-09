@@ -2,16 +2,16 @@
 /**
  * Sends feedback to a URL.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Feedback\Handlers;
+namespace Bignall\WPFoundation\Feedback\Handlers;
 
-use Arbe\WPFoundation\Feedback\Feedback;
-use Arbe\WPFoundation\Feedback\FeedbackHandler;
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Feedback\Feedback;
+use Bignall\WPFoundation\Feedback\FeedbackHandler;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * POSTs each response as JSON to an endpoint you control. Non-blocking by default, so a slow

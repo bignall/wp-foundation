@@ -2,21 +2,21 @@
 /**
  * Deactivation survey tests.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Unit\Feedback;
+namespace Bignall\WPFoundation\Tests\Unit\Feedback;
 
-use Arbe\WPFoundation\Feedback\DeactivationSurvey;
-use Arbe\WPFoundation\Feedback\Feedback;
-use Arbe\WPFoundation\Feedback\FeedbackHandler;
-use Arbe\WPFoundation\Feedback\Handlers\LocalHandler;
-use Arbe\WPFoundation\Feedback\Handlers\RemoteHandler;
-use Arbe\WPFoundation\Feedback\Reason;
-use Arbe\WPFoundation\Plugin;
-use Arbe\WPFoundation\Tests\Unit\TestCase;
+use Bignall\WPFoundation\Feedback\DeactivationSurvey;
+use Bignall\WPFoundation\Feedback\Feedback;
+use Bignall\WPFoundation\Feedback\FeedbackHandler;
+use Bignall\WPFoundation\Feedback\Handlers\LocalHandler;
+use Bignall\WPFoundation\Feedback\Handlers\RemoteHandler;
+use Bignall\WPFoundation\Feedback\Reason;
+use Bignall\WPFoundation\Plugin;
+use Bignall\WPFoundation\Tests\Unit\TestCase;
 use Brain\Monkey\Actions;
 use Brain\Monkey\Functions;
 use RuntimeException;

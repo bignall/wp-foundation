@@ -2,7 +2,7 @@
 /**
  * Unit test bootstrap.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 require_once dirname( __DIR__, 2 ) . '/vendor/autoload.php';

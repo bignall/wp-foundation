@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Acme Bookings
- * Description:       Example plugin built on Arbe WP Foundation.
+ * Description:       Example plugin built on WP Foundation.
  * Version:           1.1.0
  * Requires at least: 6.4
  * Requires PHP:      8.1

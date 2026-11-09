@@ -69,8 +69,8 @@ Extend `AbstractTask` and override only what you need. `upgrade()` defaults to c
 `activate()`.
 
 ```php
-use Arbe\WPFoundation\Plugin;
-use Arbe\WPFoundation\Tasks\AbstractTask;
+use Bignall\WPFoundation\Plugin;
+use Bignall\WPFoundation\Tasks\AbstractTask;
 
 final class UploadsDirectoryTask extends AbstractTask {
 	public function activate( Plugin $plugin ): void {

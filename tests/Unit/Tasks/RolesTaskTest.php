@@ -2,15 +2,15 @@
 /**
  * Roles task tests.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Unit\Tasks;
+namespace Bignall\WPFoundation\Tests\Unit\Tasks;
 
-use Arbe\WPFoundation\Tasks\RolesTask;
-use Arbe\WPFoundation\Tests\Unit\TestCase;
+use Bignall\WPFoundation\Tasks\RolesTask;
+use Bignall\WPFoundation\Tests\Unit\TestCase;
 use Brain\Monkey\Functions;
 use WP_Role;
 

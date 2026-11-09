@@ -2,18 +2,18 @@
 /**
  * End-to-end lifecycle against a real WordPress install.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
 // phpcs:disable WordPress.DB -- Tests inspect the database directly.
 
-namespace Arbe\WPFoundation\Tests\Integration;
+namespace Bignall\WPFoundation\Tests\Integration;
 
-use Arbe\WPFoundation\Feedback\DeactivationSurvey;
-use Arbe\WPFoundation\Feedback\Handlers\LocalHandler;
-use Arbe\WPFoundation\Tests\Integration\Fixtures\ItemsTable;
+use Bignall\WPFoundation\Feedback\DeactivationSurvey;
+use Bignall\WPFoundation\Feedback\Handlers\LocalHandler;
+use Bignall\WPFoundation\Tests\Integration\Fixtures\ItemsTable;
 
 final class LifecycleTest extends IntegrationTestCase {
 
@@ -112,6 +112,6 @@ final class LifecycleTest extends IntegrationTestCase {
 		$plugin->lifecycle()->activate();
 
 		$hooks = (array) get_option( 'uninstall_plugins' );
-		self::assertSame( array( \Arbe\WPFoundation\Plugin::class, 'handleUninstall' ), $hooks[ $plugin->basename() ] ?? null );
+		self::assertSame( array( \Bignall\WPFoundation\Plugin::class, 'handleUninstall' ), $hooks[ $plugin->basename() ] ?? null );
 	}
 }

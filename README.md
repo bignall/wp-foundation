@@ -68,7 +68,7 @@ if ( version_compare( PHP_VERSION, '8.1', '<' ) ) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-Arbe\WPFoundation\Plugin::create( __FILE__ )
+Bignall\WPFoundation\Plugin::create( __FILE__ )
 	->requires( wp: '6.4' )
 	->options( [ 'acme_settings' => [] ] )
 	->deactivationSurvey()

@@ -2,7 +2,7 @@
 /**
  * Constants for static analysis.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

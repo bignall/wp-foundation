@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace AcmeBookings;
 
-use Arbe\WPFoundation\Feedback\DeactivationSurvey;
-use Arbe\WPFoundation\Feedback\Handlers\RemoteHandler;
-use Arbe\WPFoundation\Feedback\Reason;
-use Arbe\WPFoundation\Plugin;
+use Bignall\WPFoundation\Feedback\DeactivationSurvey;
+use Bignall\WPFoundation\Feedback\Handlers\RemoteHandler;
+use Bignall\WPFoundation\Feedback\Reason;
+use Bignall\WPFoundation\Plugin;
 
 /**
  * Describes Acme Bookings' lifecycle.

@@ -2,12 +2,12 @@
 /**
  * Custom database table.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Database;
+namespace Bignall\WPFoundation\Database;
 
 /**
  * A custom table managed with dbDelta.

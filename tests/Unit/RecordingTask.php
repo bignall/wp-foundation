@@ -2,15 +2,15 @@
 /**
  * Task that records calls.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 declare(strict_types=1);
 
-namespace Arbe\WPFoundation\Tests\Unit;
+namespace Bignall\WPFoundation\Tests\Unit;
 
-use Arbe\WPFoundation\Plugin;
-use Arbe\WPFoundation\Tasks\Task;
+use Bignall\WPFoundation\Plugin;
+use Bignall\WPFoundation\Tasks\Task;
 
 final class RecordingTask implements Task {
 

@@ -2,7 +2,7 @@
 /**
  * Minimal stand-ins for WordPress classes used in unit tests.
  *
- * @package Arbe\WPFoundation
+ * @package Bignall\WPFoundation
  */
 
 // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound, PEAR.NamingConventions.ValidClassName
