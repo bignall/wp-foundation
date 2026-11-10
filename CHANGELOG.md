@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-11-10
+
 ### Added
 
 - Flash notice items can be links: pass `array( 'text' => ..., 'url' => ... )` instead of a string,
@@ -69,7 +71,8 @@ All notable changes to this project are documented here. The format follows
 - Multisite support: network activation and uninstall, new-site setup, table cleanup on site deletion.
 - Deactivation survey with configurable reasons, local storage, a remote handler and consent for the site URL.
 
-[Unreleased]: https://github.com/bignall/wp-foundation/compare/0.1.2...HEAD
+[Unreleased]: https://github.com/bignall/wp-foundation/compare/0.1.3...HEAD
+[0.1.3]: https://github.com/bignall/wp-foundation/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/bignall/wp-foundation/compare/v0.1.1...0.1.2
 [0.1.1]: https://github.com/bignall/wp-foundation/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bignall/wp-foundation/releases/tag/v0.1.0
