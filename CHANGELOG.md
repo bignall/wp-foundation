@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Flash notice items can be links: pass `array( 'text' => ..., 'url' => ... )` instead of a string,
+  and it's printed as `<a>` with the text escaped by `esc_html()` and the URL by `esc_url()`.
+  String items stay plain text.
+
+### Fixed
+
+- `taxonomies()` uninstall left WordPress's `{taxonomy}_children` option behind for hierarchical
+  taxonomies. It's now deleted with the terms.
+
 ## [0.1.2] - 2026-11-09
 
 ### Added

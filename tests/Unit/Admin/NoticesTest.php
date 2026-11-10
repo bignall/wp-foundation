@@ -38,6 +38,72 @@ final class NoticesTest extends TestCase {
 		self::assertSame( '', ob_get_clean() );
 	}
 
+	public function test_plain_text_items_never_become_links(): void {
+		$notices = $this->plugin()->notices();
+		$notices->flash( 'success', 'Created', array( '<a href="https://evil.test">x</a>' ) );
+
+		ob_start();
+		$notices->print();
+		$html = (string) ob_get_clean();
+
+		self::assertStringContainsString( '<li>&lt;a href=&quot;https://evil.test&quot;&gt;x&lt;/a&gt;</li>', $html );
+		self::assertStringNotContainsString( '<a ', $html );
+	}
+
+	public function test_link_items_escape_text_and_url(): void {
+		Functions\when( 'esc_url' )->alias(
+			static function ( string $url ): string {
+				// Like WordPress: disallowed protocols become '', the rest is HTML-escaped.
+				return str_starts_with( $url, 'javascript:' ) ? '' : htmlspecialchars( $url, ENT_QUOTES );
+			}
+		);
+
+		$notices = $this->plugin()->notices();
+		$notices->flash(
+			'success',
+			'Link created',
+			array(
+				array(
+					'text' => 'AI <Video> Maker',
+					'url'  => 'https://example.test/wp-admin/post.php?post=5&action=edit"><script>',
+				),
+				array(
+					'text' => 'Bad',
+					'url'  => 'javascript:alert(1)',
+				),
+				array( 'text' => 'No URL' ),
+				'Plain',
+			)
+		);
+
+		self::assertSame(
+			array(
+				array(
+					'text' => 'AI <Video> Maker',
+					'url'  => 'https://example.test/wp-admin/post.php?post=5&action=edit"><script>',
+				),
+				array(
+					'text' => 'Bad',
+					'url'  => 'javascript:alert(1)',
+				),
+				array( 'text' => 'No URL' ),
+				'Plain',
+			),
+			$notices->pending()[0]['items']
+		);
+
+		ob_start();
+		$notices->print();
+		$html = (string) ob_get_clean();
+
+		self::assertStringContainsString( '<li><a href="https://example.test/wp-admin/post.php?post=5&amp;action=edit&quot;&gt;&lt;script&gt;">AI &lt;Video&gt; Maker</a></li>', $html );
+		self::assertStringContainsString( '<li>Bad</li>', $html, 'A URL esc_url() rejects prints as plain text.' );
+		self::assertStringContainsString( '<li>No URL</li>', $html );
+		self::assertStringContainsString( '<li>Plain</li>', $html );
+		self::assertStringNotContainsString( '<script>', $html );
+		self::assertStringNotContainsString( 'javascript:', $html );
+	}
+
 	public function test_unknown_type_falls_back_to_info(): void {
 		$notices = $this->plugin()->notices();
 		$notices->flash( 'shout', 'Hi' );

@@ -117,6 +117,35 @@ final class AdoptionAndCleanupTest extends IntegrationTestCase {
 		self::assertFalse( taxonomy_exists( 'wpf_item_cat' ), 'The temporary registration is removed.' );
 	}
 
+	public function test_uninstall_leaves_no_options_for_a_hierarchical_taxonomy(): void {
+		register_taxonomy( 'wpf_item_cat', 'wpf_item', array( 'hierarchical' => true ) );
+
+		$parent = self::factory()->term->create( array( 'taxonomy' => 'wpf_item_cat' ) );
+		self::factory()->term->create(
+			array(
+				'taxonomy' => 'wpf_item_cat',
+				'parent'   => $parent,
+			)
+		);
+		// Core builds the hierarchy cache lazily; make sure it exists, as on a live site.
+		_get_term_hierarchy( 'wpf_item_cat' );
+		self::assertNotFalse( get_option( 'wpf_item_cat_children' ) );
+
+		unregister_taxonomy( 'wpf_item_cat' );
+
+		Plugin::create( self::FILE, 'wpf_fixture' )
+			->taxonomies( 'wpf_item_cat' )
+			->deleteDataOnUninstall()
+			->lifecycle()
+			->uninstall();
+
+		global $wpdb;
+		self::assertSame(
+			array(),
+			$wpdb->get_col( $wpdb->prepare( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s", '%' . $wpdb->esc_like( 'wpf_item_cat' ) . '%' ) )
+		);
+	}
+
 	public function test_requested_rewrite_flush_happens_on_init(): void {
 		$plugin = Plugin::create( self::FILE, 'wpf_fixture' );
 		update_option( 'rewrite_rules', array( 'stale' => 'index.php' ) );
