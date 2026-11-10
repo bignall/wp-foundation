@@ -18,7 +18,8 @@ use Bignall\WPFoundation\Plugin;
  * relationships, in every status, including `auto-draft` and `trash`, which `'any'` skips.
  * Terms are deleted with `wp_delete_term()`, which removes their meta. The plugin's taxonomies
  * aren't registered while WordPress uninstalls it, so each one is registered for the duration
- * of the cleanup.
+ * of the cleanup. The `{taxonomy}_children` option, where WordPress caches the hierarchy of
+ * hierarchical taxonomies, is deleted too.
  *
  * `Plugin::tasks()` keeps this task last, so on uninstall (which runs tasks in reverse) content
  * is deleted before custom tables are dropped.
@@ -148,5 +149,9 @@ final class ContentTask extends AbstractTask {
 		if ( $registered ) {
 			unregister_taxonomy( $taxonomy );
 		}
+
+		// Core caches the term hierarchy here (see _get_term_hierarchy()), and deleting terms
+		// rebuilds it rather than removing it. Deleted last, so nothing recreates it.
+		delete_option( "{$taxonomy}_children" );
 	}
 }

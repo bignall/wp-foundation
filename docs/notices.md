@@ -28,9 +28,32 @@ add_action( 'admin_post_acme_import', function () use ( $plugin ) {
 | --- | --- |
 | `$type` | `success`, `error`, `warning` or `info` (anything else becomes `info`). |
 | `$message` | Plain text. It's escaped when printed, so don't pass HTML. |
-| `$items` | Optional details, printed as a bulleted list under the message. |
+| `$items` | Optional details, printed as a bulleted list under the message. Each is plain text, or a link (see below). |
 
 It returns false, and stores nothing, when no user is logged in.
+
+## Links in items
+
+Items are plain text and escaped like the message, so HTML in them shows as text. To link to
+something, such as the item you just created, pass the item as an array with `text` and `url`:
+
+```php
+$plugin->notices()->flash(
+	'success',
+	__( 'Link created:', 'acme' ),
+	array(
+		array(
+			'text' => sprintf( '%s → %s', $post->post_title, $shortUrl ),
+			'url'  => get_edit_post_link( $post->ID, 'raw' ),
+		),
+	)
+);
+```
+
+It's printed as `<a href="…">…</a>`, with the text escaped by `esc_html()` and the URL by
+`esc_url()`, so neither can inject markup. If `url` is missing or empty, or `esc_url()` rejects it
+(a `javascript:` URL, for example), the text is printed without a link. Plain-text and link items
+can be mixed in one list.
 
 ## How it works
 

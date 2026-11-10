@@ -97,6 +97,21 @@ final class ContentTaskTest extends TestCase {
 		self::assertSame( array( 'register:acme_cat', 'unregister:acme_cat' ), $registered );
 	}
 
+	public function test_deletes_cached_term_hierarchy(): void {
+		Functions\when( 'taxonomy_exists' )->justReturn( true );
+		Functions\when( 'get_terms' )->justReturn( array( 3 ) );
+		Functions\when( 'wp_delete_term' )->justReturn( true );
+		$this->options['acme_cat_children'] = array( 3 => array( 4 ) );
+		$this->options['other_children']    = array( 1 => array( 2 ) );
+
+		$task = new ContentTask();
+		$task->taxonomies( 'acme_cat' );
+		$task->uninstall( $this->plugin() );
+
+		self::assertArrayNotHasKey( 'acme_cat_children', $this->options );
+		self::assertArrayHasKey( 'other_children', $this->options );
+	}
+
 	public function test_leaves_registered_taxonomy_registered(): void {
 		Functions\when( 'taxonomy_exists' )->justReturn( true );
 		Functions\expect( 'register_taxonomy' )->never();

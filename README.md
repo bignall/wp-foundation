@@ -110,7 +110,8 @@ only included if the user ticks a consent box. See [docs/deactivation-survey.md]
 - `$plugin->requestRewriteFlush()` rebuilds rewrite rules at the end of the next `init`, for example
   after a settings page changes a URL prefix.
 - `$plugin->notices()->flash( 'success', 'Saved.' )` shows a notice on the user's next admin page,
-  for forms that redirect after saving.
+  for forms that redirect after saving. Detail items are plain text, or
+  `array( 'text' => ..., 'url' => ... )` to print an escaped link.
 
 ## Documentation
 

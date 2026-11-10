@@ -21,6 +21,10 @@ use Bignall\WPFoundation\Plugin;
  *     wp_safe_redirect( $url );
  *     exit;
  *
+ * Items are plain text by default. To link to something, pass an item as
+ * `array( 'text' => ..., 'url' => ... )`: it is printed as a link, with the text escaped
+ * with `esc_html()` and the URL with `esc_url()`, so no markup can be injected either way.
+ *
  * Notices are stored per user in a transient named `{prefix}_notices_{user id}` and expire
  * after ten minutes if never shown. Each plugin has its own store, so plugins built on the
  * framework never print each other's notices.
@@ -53,9 +57,11 @@ final class Notices {
 	/**
 	 * Queue a notice for the current user's next admin page.
 	 *
-	 * @param string       $type    One of success, error, warning or info.
-	 * @param string       $message Message (plain text; it is escaped when printed).
-	 * @param list<string> $items   Optional details, printed as a list.
+	 * Each item is plain text, or `array( 'text' => ..., 'url' => ... )` to print it as a link.
+	 *
+	 * @param string                                               $type    One of success, error, warning or info.
+	 * @param string                                               $message Message (plain text; it is escaped when printed).
+	 * @param array<int, string|array{text: string, url?: string}> $items   Optional details, printed as a list.
 	 * @return bool Whether the notice was stored (false when nobody is logged in).
 	 */
 	public function flash( string $type, string $message, array $items = array() ): bool {
@@ -68,7 +74,7 @@ final class Notices {
 		$notices[] = array(
 			'type'    => in_array( $type, self::TYPES, true ) ? $type : 'info',
 			'message' => $message,
-			'items'   => array_map( 'strval', $items ),
+			'items'   => array_values( array_map( array( self::class, 'normalizeItem' ), $items ) ),
 		);
 
 		return set_transient( $key, $notices, self::LIFETIME );
@@ -77,7 +83,7 @@ final class Notices {
 	/**
 	 * Notices waiting for the current user.
 	 *
-	 * @return list<array{type: string, message: string, items: list<string>}>
+	 * @return list<array{type: string, message: string, items: list<string|array{text: string, url?: string}>}>
 	 */
 	public function pending(): array {
 		$key = $this->key();
@@ -107,12 +113,50 @@ final class Notices {
 			if ( array() !== $notice['items'] ) {
 				echo '<ul class="ul-disc">';
 				foreach ( $notice['items'] as $item ) {
-					echo '<li>' . esc_html( $item ) . '</li>';
+					echo '<li>' . self::itemHtml( $item ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in itemHtml().
 				}
 				echo '</ul>';
 			}
 			echo '</div>';
 		}
+	}
+
+	/**
+	 * Normalize an item to plain text or a `text`/`url` pair.
+	 *
+	 * @param mixed $item Item as passed to flash().
+	 * @return string|array{text: string, url?: string}
+	 */
+	private static function normalizeItem( mixed $item ): string|array {
+		if ( ! is_array( $item ) ) {
+			return is_scalar( $item ) ? (string) $item : '';
+		}
+
+		$text = isset( $item['text'] ) && is_scalar( $item['text'] ) ? (string) $item['text'] : '';
+		$url  = isset( $item['url'] ) && is_scalar( $item['url'] ) ? (string) $item['url'] : '';
+
+		return '' === $url ? array( 'text' => $text ) : array(
+			'text' => $text,
+			'url'  => $url,
+		);
+	}
+
+	/**
+	 * Escaped HTML for an item: text, or a link when it has a URL with an allowed protocol.
+	 *
+	 * @param mixed $item Stored item.
+	 */
+	private static function itemHtml( mixed $item ): string {
+		$item = self::normalizeItem( $item );
+		if ( is_string( $item ) ) {
+			return esc_html( $item );
+		}
+
+		$text = esc_html( $item['text'] );
+		$url  = isset( $item['url'] ) ? esc_url( $item['url'] ) : '';
+
+		// esc_url() returns '' for disallowed protocols such as javascript:, so fall back to text.
+		return '' === $url ? $text : sprintf( '<a href="%s">%s</a>', $url, $text );
 	}
 
 	/**
