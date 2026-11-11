@@ -122,6 +122,7 @@ only included if the user ticks a consent box. See [docs/deactivation-survey.md]
 - [Database tables and migrations](docs/database.md)
 - [Deactivation survey](docs/deactivation-survey.md)
 - [Multisite](docs/multisite.md)
+- [Settings](docs/settings.md)
 - [Flash notices](docs/notices.md)
 - [Prefixing with Strauss](docs/prefixing.md)
 - [Release builds](docs/releasing.md)

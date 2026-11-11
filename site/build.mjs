@@ -31,6 +31,7 @@ const summaries = {
 	database: 'Custom tables kept in sync with dbDelta, and versioned migrations that resume after a failure.',
 	'deactivation-survey': 'Ask why people deactivate, customise the reasons, and send answers where you want.',
 	multisite: 'Network activation, new sites, deleted sites, and how to handle very large networks.',
+	settings: 'Keep settings in one option: defaults, per-request cache, sanitizing, registration and field names.',
 	notices: 'Show a notice on the next admin page after a form redirects, without writing it yourself.',
 	prefixing: 'Bundle the library safely alongside other plugins by prefixing it with Strauss.',
 	releasing: 'Build a small release zip that leaves out Composer\'s dev tools, and check the prefixing.',

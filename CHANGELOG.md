@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `Settings`: a plugin's settings in one array option, with defaults, a per-request cache (per
+  site on multisite), `get()`, `update()`, a sanitize callback, Settings API registration and
+  `field()` for form field names. Pass it to `Plugin::settings()` to add its defaults on
+  activation, merge new defaults on upgrade, register it and delete it on uninstall.
+  `Plugin::setting( $option )` returns it again. See [Settings](docs/settings.md).
+
 ## [0.1.3] - 2026-11-10
 
 ### Added

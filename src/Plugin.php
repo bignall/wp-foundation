@@ -16,6 +16,7 @@ use Bignall\WPFoundation\Database\Table;
 use Bignall\WPFoundation\Feedback\DeactivationSurvey;
 use Bignall\WPFoundation\Lifecycle\Lifecycle;
 use Bignall\WPFoundation\Requirements\Requirements;
+use Bignall\WPFoundation\Settings\Settings;
 use Bignall\WPFoundation\Tasks\ContentTask;
 use Bignall\WPFoundation\Tasks\CronTask;
 use Bignall\WPFoundation\Tasks\OptionsTask;
@@ -90,6 +91,13 @@ final class Plugin {
 	 * @var list<callable(Plugin): void>
 	 */
 	private array $readyCallbacks = array();
+
+	/**
+	 * Settings objects, keyed by option name.
+	 *
+	 * @var array<string, Settings>
+	 */
+	private array $settings = array();
 
 	private bool $booted = false;
 	private bool $ready  = false;
@@ -208,6 +216,24 @@ final class Plugin {
 	 */
 	public function options( array $options, bool $autoload = false, bool $merge = false ): self {
 		$this->sharedTask( OptionsTask::class )->add( $options, $autoload, $merge );
+		return $this;
+	}
+
+	/**
+	 * Use array options described by `Settings` objects: their defaults are added on activation
+	 * and merged into stored values on upgrade, they're registered with the Settings API, and
+	 * they're deleted on uninstall when data deletion is enabled.
+	 *
+	 * @param Settings ...$settings Settings.
+	 */
+	public function settings( Settings ...$settings ): self {
+		foreach ( $settings as $setting ) {
+			$this->settings[ $setting->name() ] = $setting;
+			$this->sharedTask( OptionsTask::class )->add( array( $setting->name() => $setting->defaults() ), $setting->autoload(), true );
+			if ( $this->booted ) {
+				$setting->register();
+			}
+		}
 		return $this;
 	}
 
@@ -404,6 +430,10 @@ final class Plugin {
 
 		$this->survey?->register( $this );
 
+		foreach ( $this->settings as $setting ) {
+			$setting->register();
+		}
+
 		if ( is_admin() ) {
 			$this->notices()->register();
 		}
@@ -447,6 +477,15 @@ final class Plugin {
 	// ---------------------------------------------------------------------
 	// Accessors.
 	// ---------------------------------------------------------------------
+
+	/**
+	 * A Settings object passed to `settings()`, by option name.
+	 *
+	 * @param string $option Option name.
+	 */
+	public function setting( string $option ): ?Settings {
+		return $this->settings[ $option ] ?? null;
+	}
 
 	/**
 	 * Absolute path to the plugin's main file.
